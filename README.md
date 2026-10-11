@@ -21,7 +21,7 @@ Public URL/key defaults are in `web/src/backend-config.ts`; environment variable
 
 Routes: `/#/`, `/#/search`, `/#/orders`, `/#/profile`, `/#/restaurant`, `/#/admin`, `/#/rider`.
 
-See [SETUP.md](docs/SETUP.md), [STATUS.md](docs/STATUS.md), [TEST_REPORT.md](docs/TEST_REPORT.md) and [ANDROID.md](docs/ANDROID.md). The Android source has not been compiled into an APK in this environment.
+See [SETUP.md](docs/SETUP.md), [STATUS.md](docs/STATUS.md), [TEST_REPORT.md](docs/TEST_REPORT.md) and [ANDROID.md](docs/ANDROID.md). GitHub Actions compiled the debug APK; download it from the `nexora-food-debug-apk` artifact. Browser CI passed 12 checks on both built and live deployments.
 
 ## Database sources
 Only the five Food-prefixed files in `supabase/migrations/` form the current shared-project migration chain. Original standalone migrations and their tests are retained in `supabase/legacy-migrations/`; do not apply them to this shared project. Original Markdown reference documents remain under `docs/reference-original/`. The owner's full authorization supersedes historical PLAN/GO gates.

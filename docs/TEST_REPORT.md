@@ -9,9 +9,18 @@
 - Storage buckets and ownership policy definitions inspected; existing policies are bucket-scoped.
 - Five prefixed Food Edge Functions deployed. Payment and push providers have not been invoked with credentials.
 
+- GitHub Actions run [38129495300](https://github.com/templateapp67-oss/food-app-/actions/runs/38129495300): all 27 Web tests and production build passed; a fresh isolated Supabase migration reset plus transactional Food integration SQL passed.
+- Browser CI: 12/12 checks on the built app and 12/12 on the live Sites URL. Projects: Desktop Chrome, Pixel 7 mobile Chromium and iPhone 13 mobile WebKit. Tested viewport fit, touch/mouse restaurant discovery, labelled local demo COD checkout, granted Jaipur geolocation, and direct cover/gallery/menu-page file selection, preview and local save. A discovered iPhone overflow and overlapping header search row were corrected and verified.
+- Android SDK 36 debug compilation, JVM unit tests and assembleDebug passed. Fixed obsolete SDK setup package and Compose syntax errors. Debug APK SHA-256: `a6286d37eb40496c150be094e61391921a14caaace4bc6e1d5fe824cc4caa9f3`.
+
 ## Not executed
-Actual browser/visual/device E2E, live signup/password sign-in, reset-email delivery/redirect, actual image-upload round trip, native compilation/UI tests, Razorpay/SMS/FCM provider tests, concurrent load/stress tests. Browser QA was skipped because the required managed control-browser capability is unavailable; no improvised preview/browser was started. No APK exists.
+Live signup/password sign-in, reset-email delivery/redirect, real authorized image-upload/storage round trip, full native COD checkout, denied GPS permission, native GPS UI, Razorpay/SMS/FCM provider tests, concurrent load/stress tests and physical-device tests. Browser demo file saves and demo orders must not be described as live fulfillment or backend upload E2E.
 
-Original standalone pgTAP tests are archived alongside the legacy schema. The current Food integration SQL is under `supabase/tests/shared-food-integration.sql`. CI source has been updated for that contract; no remote CI execution is claimed.
+Original standalone pgTAP tests are archived alongside the legacy schema. The current Food integration SQL is under `supabase/tests/shared-food-integration.sql`. The database CI job executed that contract successfully against a clean Supabase stack.
 
-Direct photo selection, metadata preservation, invalid-file rejection and cleanup on denied saves are covered by four new DOM tests. The real-database integration also exercises the photo-only save RPC and denies customer edits. Browser/mobile test definitions and native UI Automator smoke tests are now included; execution is still pending actual browser/emulator access.
+Direct photo selection, metadata preservation, invalid-file rejection and cleanup on denied saves are covered by four new DOM tests. The real-database integration also exercises the photo-only save RPC and denies customer edits. Browser/mobile definitions executed on GitHub-hosted browsers. Native instrumentation execution is reported separately below.
+
+## Final CI result
+All five jobs passed in [run 38129902657](https://github.com/templateapp67-oss/food-app-/actions/runs/38129902657): Web, database, browser, Android debug build and Android device. Native UI Automator: 2/2 smoke tests passed on an API 35 Android emulator (email sign-in/signup fields and Orders/Rewards navigation after rotation). The rotation test now waits for recreated UI elements before tapping. This checks screen reachability, not actual account sign-in or complete native fulfillment.
+
+The downloadable APK is the app-debug.apk from the successful emulator job, so it is the exact binary installed for the native smoke tests.
