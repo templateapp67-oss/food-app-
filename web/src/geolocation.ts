@@ -1,16 +1,16 @@
 import {jaipurLocalities} from './locations';
-import {useCallback,useEffect,useState} from 'react';
-export type JaipurLocation={latitude:number;longitude:number;area:string;pincode:string;street:string;accuracy:number;warning?:string};
+import {useCallback,useEffect,useRef,useState} from 'react';
+export type JaipurLocation={latitude:number;longitude:number;area:string;pincode:string;street:string;accuracy:number;warning?:string;source?:'gps'|'fallback'};
 const cacheKey='nexora.food.location';
 function cached(){try{const data=JSON.parse(localStorage.getItem(cacheKey)||'null');return data&&Date.now()-data.time<15*60*1000?data.value as JaipurLocation:null}catch{return null}}
-function position(highAccuracy:boolean){return new Promise<GeolocationPosition>((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:highAccuracy,timeout:highAccuracy?15000:10000,maximumAge:highAccuracy?60000:300000}))}
+function position(highAccuracy:boolean){return new Promise<GeolocationPosition>((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:highAccuracy,timeout:highAccuracy?15000:10000,maximumAge:highAccuracy?0:300000}))}
 export async function locateJaipur(onPosition?:(value:JaipurLocation)=>void):Promise<JaipurLocation>{
  if(window.isSecureContext===false)throw new Error('Open Nexora Food using its HTTPS link to enable location. You can also enter your address manually.');
  if(!navigator.geolocation)throw new Error('GPS is unavailable. Choose your Jaipur area manually.');
  let pos:GeolocationPosition;try{pos=await position(true)}catch(first){if((first as GeolocationPositionError).code===1)throw new Error('Location permission denied. Allow Location in your browser site settings, then retry, or enter your Jaipur address manually.');try{pos=await position(false)}catch(e){if((e as GeolocationPositionError).code===1)throw new Error('Location permission denied. Allow Location in browser settings or enter your address manually.');throw new Error('Could not get your location. Turn on device Location / GPS and retry, or enter your street address below.')}}
  const{latitude,longitude,accuracy}=pos.coords;
  if(!Number.isFinite(latitude)||!Number.isFinite(longitude)||latitude<26.65||latitude>27.25||longitude<75.45||longitude>76.05)throw new Error('Your GPS location is outside Jaipur. Nexora Food currently serves Jaipur only.');
- const coordinates:JaipurLocation={latitude,longitude,accuracy,area:'',pincode:'',street:''};onPosition?.(coordinates);
+ const coordinates:JaipurLocation={latitude,longitude,accuracy,area:'',pincode:'',street:'',source:'gps'};onPosition?.(coordinates);
  const old=cached();if(old&&Math.abs(old.latitude-latitude)<.0005&&Math.abs(old.longitude-longitude)<.0005)return {...old,latitude,longitude,accuracy};
  const endpoint=import.meta.env.VITE_GEOCODING_URL||'https://nominatim.openstreetmap.org/reverse';
  let data;try{const url=new URL(endpoint);url.search=new URLSearchParams({format:'jsonv2',lat:String(latitude),lon:String(longitude),zoom:'18',addressdetails:'1','accept-language':'en'}).toString();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(url,{signal:controller.signal,headers:{Accept:'application/json'}});if(!response.ok)throw new Error();data=await response.json()}finally{clearTimeout(timer)}}catch{return {...coordinates,warning:'Current location found. Address lookup is unavailable. Select your Jaipur area and enter the PIN code manually.'}}
@@ -23,7 +23,30 @@ export async function locateJaipur(onPosition?:(value:JaipurLocation)=>void):Pro
  if(!jaipurLocalities.some(name=>name===area))result.warning=`GPS found ${area}. Select the supported delivery locality and enter its PIN code.`;
  try{localStorage.setItem(cacheKey,JSON.stringify({time:Date.now(),value:result}))}catch{/* Location remains usable without device storage. */}return result;
 }
-export function useJaipurLocation(auto:boolean){const[value,setValue]=useState<JaipurLocation|null>(cached),[error,setError]=useState(''),[busy,setBusy]=useState(false),[status,setStatus]=useState('');const detect=useCallback(async(onPosition?:(value:JaipurLocation)=>void)=>{setBusy(true);setError('');setStatus('Getting GPS location…');try{const next=await locateJaipur(coords=>{setValue(coords);setStatus('Finding your Jaipur area…');onPosition?.(coords)});setValue(next);setError(next.warning||'');return next}catch(e){setError(e instanceof Error?e.message:'Choose your Jaipur area manually.');return null}finally{setBusy(false);setStatus('')}},[]);useEffect(()=>{if(!auto||value?.area||sessionStorage.getItem('nexora.location.attempted'))return;sessionStorage.setItem('nexora.location.attempted','true');void detect()},[auto,value?.area,detect]);return{value,error,busy,status,detect,clear:()=>{setValue(null);setError('');localStorage.removeItem(cacheKey)}}}
+export const defaultJaipurHub:JaipurLocation={latitude:26.9124,longitude:75.7873,area:'Jaipur',pincode:'',street:'',accuracy:0,source:'fallback'};
+export function useJaipurLocation(auto:boolean,identity:string|null=null){
+ const[value,setValue]=useState<JaipurLocation|null>(cached),[error,setError]=useState(''),[busy,setBusy]=useState(false),[status,setStatus]=useState('');
+ const inFlight=useRef<Promise<JaipurLocation|null>|null>(null),lastIdentity=useRef<string|null>(null);
+ const detect=useCallback((onPosition?:(value:JaipurLocation)=>void)=>{
+  if(inFlight.current)return inFlight.current;
+  setBusy(true);setError('');setStatus('Getting GPS location…');
+  const request=(async()=>{try{
+   const next=await locateJaipur(coords=>{setValue(coords);setStatus('Finding your Jaipur area…');onPosition?.(coords)});
+   setValue(next);setError(next.warning||'');return next;
+  }catch(e){setValue({...defaultJaipurHub});setError(e instanceof Error?e.message:'Using the default Jaipur hub.');return null}
+  finally{setBusy(false);setStatus('');inFlight.current=null}})();
+  inFlight.current=request;return request;
+ },[]);
+ useEffect(()=>{
+  if(!auto)return;
+  const key=identity||'guest';if(lastIdentity.current===key)return;lastIdentity.current=key;
+  if(!identity){try{if(sessionStorage.getItem('nexora.location.attempted'))return;sessionStorage.setItem('nexora.location.attempted','true')}catch{/* GPS works without browser storage. */}}
+  void detect();
+ },[auto,identity,detect]);
+ const accept=useCallback((next:JaipurLocation)=>{if(next.source==='fallback')return;setValue(next);setError(next.warning||'')},[]);
+ const clear=useCallback(()=>{setValue(null);setError('');try{localStorage.removeItem(cacheKey)}catch{/* Saved delivery addresses remain available. */}},[]);
+ return{value,error,busy,status,detect,accept,clear};
+}
 
 export type AddressMatch={latitude:number;longitude:number;label:string};
 export async function searchJaipurAddress(street:string,area:string,pin:string):Promise<AddressMatch[]>{

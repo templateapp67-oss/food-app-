@@ -20,3 +20,20 @@ test('GPS denial lets customers search a normal street address without entering 
  await page.getByRole('button',{name:'Choose a Jaipur address',exact:true}).click();await page.getByRole('button',{name:'Add a new address'}).click();await page.getByRole('button',{name:'Use current location'}).click();await expect(page.getByRole('alert')).toContainText('permission denied');await expect(page.getByLabel('Latitude',{exact:true})).toHaveCount(0);await expect(page.getByLabel('Longitude',{exact:true})).toHaveCount(0);
  await page.getByLabel('House / flat and street',{exact:true}).fill('24, Park Avenue');await page.getByLabel('Jaipur area / locality',{exact:true}).selectOption('C Scheme');await page.getByLabel('PIN code',{exact:true}).fill('302001');await page.getByRole('button',{name:'Save address',exact:true}).click();await expect(page.getByRole('region',{name:'Confirm delivery location'})).toBeVisible();await page.getByRole('button',{name:'Use this delivery location'}).click();await page.getByRole('button',{name:'Save address',exact:true}).click();await expect(page.getByText('Address saved',{exact:true})).toBeVisible();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.addresses')||'[]').at(-1));expect(saved.latitude).toBe(26.9124);expect(saved.line1).toBe('24, Park Avenue');
 });
+for(const mode of ['login','signup'] as const)test(`${mode} retries a denied guest GPS attempt and locks the detected header area`,async({page})=>{
+ await page.addInitScript(()=>{
+  let attempts=0;Object.defineProperty(navigator,'geolocation',{configurable:true,value:{getCurrentPosition:(success:(p:unknown)=>void,reject:(e:unknown)=>void)=>{attempts++;if(attempts===1)reject({code:1});else success({coords:{latitude:26.9124,longitude:75.7873,accuracy:8}})}}});
+  const native=window.fetch.bind(window),id='00000000-0000-4000-8000-000000000123';
+  window.fetch=(input,init)=>{const url=String(input);if(!url.startsWith('https://zilwgiuiygqqardzutxi.supabase.co'))return native(input,init);
+   const user={id,email:'qa@example.test',aud:'authenticated',role:'authenticated',created_at:new Date().toISOString(),app_metadata:{provider:'email',providers:['email']},user_metadata:{full_name:'QA customer'}};
+   const payload=btoa(JSON.stringify({sub:id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600}));
+   let body:unknown=[];if(url.includes('/auth/v1/token')||url.includes('/auth/v1/signup'))body={access_token:`eyJhbGciOiJIUzI1NiJ9.${payload}.test`,refresh_token:'qa-test-refresh',token_type:'bearer',expires_in:3600,user};else if(url.includes('/auth/v1/user'))body=user;else if(url.includes('nexora_food_profiles'))body={id,full_name:'QA customer',email:'qa@example.test',phone:''};else if(url.includes('nexora_food_public_config'))body={'cod.enabled':true};else if(url.includes('/rpc/'))body=id;
+   return Promise.resolve(new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}}));
+  };
+ });
+ await page.goto('/');const badge=page.getByRole('button',{name:'Delivery location',exact:true});await expect(badge).toContainText('Jaipur · default hub');
+ await page.getByRole('button',{name:'Sign in / Sign up',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Good food starts with hello.'});
+ if(mode==='signup'){await dialog.getByRole('button',{name:'Create account',exact:true}).first().click();await dialog.getByLabel('Full name').fill('QA customer')}
+ await dialog.getByLabel('Email',{exact:true}).fill('qa@example.test');await dialog.getByLabel('Password',{exact:true}).fill('qa-password-123');await dialog.locator('form').getByRole('button',{name:mode==='signup'?'Create account':'Sign in',exact:true}).click();
+ await expect(dialog).toHaveCount(0);await expect(badge).toContainText('C Scheme, Jaipur');await badge.click();await page.getByRole('button',{name:'Add a new address'}).click();await expect(page.getByLabel('Jaipur area / locality',{exact:true})).toHaveValue('C Scheme');await expect(page.getByLabel('Jaipur area / locality',{exact:true})).toBeDisabled();await expect(page.getByLabel('PIN code',{exact:true})).toHaveValue('302001');
+});

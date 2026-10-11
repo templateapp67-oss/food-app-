@@ -10,3 +10,10 @@ it('keeps a GPS fix with zero reported accuracy when customers complete an unava
  fireEvent.change(screen.getByLabelText('Jaipur area / locality'),{target:{value:'C Scheme'}});fireEvent.change(screen.getByLabelText('PIN code'),{target:{value:'302001'}});fireEvent.change(screen.getByLabelText('House / flat and street'),{target:{value:'24 Test Street'}});
  fireEvent.click(screen.getByRole('button',{name:'Save address'}));await waitFor(()=>expect(save).toHaveBeenCalledWith(expect.objectContaining({latitude:26.9124,longitude:75.7873,line1:'24 Test Street'})));
 });
+it('prefills and locks an authenticated GPS area and saves without a street search',async()=>{
+ const save=vi.fn().mockResolvedValue(undefined);render(<DeliveryAddressForm busy={false} onSave={save} initialLocation={{latitude:26.9124,longitude:75.7873,accuracy:8,area:'C Scheme',pincode:'302001',street:'Park Avenue',source:'gps'}}/>);
+ expect((screen.getByLabelText('Jaipur area / locality')as HTMLSelectElement).disabled).toBe(true);expect((screen.getByLabelText('PIN code')as HTMLInputElement).value).toBe('302001');fireEvent.change(screen.getByLabelText('House / flat and street'),{target:{value:'24 Park Avenue'}});fireEvent.click(screen.getByRole('button',{name:'Save address'}));await waitFor(()=>expect(save).toHaveBeenCalledWith(expect.objectContaining({latitude:26.9124,line1:'24 Park Avenue'})));
+});
+it('does not prefill delivery coordinates from a default discovery hub',()=>{
+ render(<DeliveryAddressForm busy={false} onSave={vi.fn()} initialLocation={{latitude:26.9124,longitude:75.7873,accuracy:0,area:'Jaipur',pincode:'',street:'',source:'fallback'}}/>);expect((document.querySelector('input[name=latitude]')as HTMLInputElement).value).toBe('');expect((screen.getByLabelText('Jaipur area / locality')as HTMLSelectElement).disabled).toBe(false);
+});
