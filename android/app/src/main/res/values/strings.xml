@@ -1,0 +1,8 @@
+<resources>
+ <string name="app_name">Nexora Food</string><string name="tagline">Good food, delivered right.</string>
+ <string name="home">Home</string><string name="search">Search</string><string name="orders">Orders</string><string name="rewards">Rewards</string><string name="profile">Profile</string>
+ <string name="discover">Your next favourite meal is right here.</string><string name="demo_notice">DEMO · No real payments or deliveries</string>
+ <string name="search_hint">Search dishes or restaurants</string><string name="cart">View cart</string><string name="retry">Retry</string><string name="add">Add</string><string name="remove">Remove</string>
+ <string name="sign_in">Sign in</string><string name="phone_hint">Mobile number</string><string name="otp_hint">6-digit verification code</string><string name="send_code">Send verification code</string><string name="verify">Verify</string><string name="continue_checkout">Continue to checkout</string>
+ <string name="backend_missing">Live backend is not configured. Connect the Nexora Food Supabase project.</string>
+</resources>

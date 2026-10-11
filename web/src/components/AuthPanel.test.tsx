@@ -1,0 +1,12 @@
+import {beforeEach,afterEach,describe,it,expect,vi} from 'vitest';
+import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
+const auth=vi.hoisted(()=>({signInWithPassword:vi.fn(),signUp:vi.fn(),resetPasswordForEmail:vi.fn()}));
+const rpc=vi.hoisted(()=>vi.fn());
+vi.mock('../api',()=>({configured:true,supabase:{auth},rpc}));
+import AuthPanel from './AuthPanel';
+beforeEach(()=>vi.resetAllMocks());afterEach(cleanup);
+describe('Live email authentication',()=>{
+ it('surfaces login failures without entering a workspace',async()=>{auth.signInWithPassword.mockResolvedValue({error:new Error('Invalid login credentials')});const done=vi.fn();render(<AuthPanel onSuccess={done} onDemo={()=>{}}/>);fireEvent.change(screen.getByLabelText('Email'),{target:{value:'customer@example.invalid'}});fireEvent.change(screen.getByLabelText('Password'),{target:{value:'wrong-password'}});fireEvent.submit(screen.getByLabelText('Email').closest('form')!);await screen.findByRole('alert');expect(done).not.toHaveBeenCalled();expect(rpc).not.toHaveBeenCalled();});
+ it('creates only display metadata and waits for confirmation when no session exists',async()=>{auth.signUp.mockResolvedValue({data:{session:null},error:null});const done=vi.fn();render(<AuthPanel onSuccess={done} onDemo={()=>{}}/>);fireEvent.click(screen.getByRole('button',{name:'Create account'}));fireEvent.change(screen.getByLabelText('Full name'),{target:{value:'Customer One'}});fireEvent.change(screen.getByLabelText('Email'),{target:{value:'customer@example.invalid'}});fireEvent.change(screen.getByLabelText('Password'),{target:{value:'valid-password'}});fireEvent.submit(screen.getByLabelText('Email').closest('form')!);await screen.findByRole('status');expect(auth.signUp.mock.calls[0][0].options.data).toEqual({full_name:'Customer One'});expect(done).not.toHaveBeenCalled();});
+ it('initializes the Food account before reporting sign-in success',async()=>{auth.signInWithPassword.mockResolvedValue({error:null});rpc.mockResolvedValue(null);const done=vi.fn();render(<AuthPanel onSuccess={done} onDemo={()=>{}}/>);fireEvent.change(screen.getByLabelText('Email'),{target:{value:'customer@example.invalid'}});fireEvent.change(screen.getByLabelText('Password'),{target:{value:'valid-password'}});fireEvent.submit(screen.getByLabelText('Email').closest('form')!);await waitFor(()=>expect(done).toHaveBeenCalledOnce());expect(rpc).toHaveBeenCalledWith('nexora_ensure_account');});
+});

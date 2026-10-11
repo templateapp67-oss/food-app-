@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+!.env.server.example
+*.jks
+*.keystore
+android/local.properties
+android/.gradle/
+**/build/
+
+qa/browser/playwright-report/
+qa/browser/test-results/
+android/device-evidence/

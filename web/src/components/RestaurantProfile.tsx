@@ -1,0 +1,14 @@
+import {useState,type FormEvent} from 'react';
+import type {Restaurant} from '../model';
+import RestaurantImages from './RestaurantImages';
+import {rpc} from '../api';
+export default function RestaurantProfile({restaurant:r,demo,onSave,onHours}:{restaurant:Restaurant;demo:boolean;onSave:(r:Restaurant)=>void;onHours:()=>void}){
+ const[busy,setBusy]=useState(false),[error,setError]=useState('');
+ async function save(e:FormEvent<HTMLFormElement>){e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);setError('');try{
+  const split=(name:string)=>String(f.get(name)||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);
+  const patch={description:String(f.get('description')).trim(),phone:String(f.get('phone')).trim(),prep_time_min:Number(f.get('prep')),is_temporarily_closed:f.get('closed')==='on',cover_url:r.cover_url||'',cuisines:split('cuisines'),gallery_urls:r.gallery_urls||[],menu_pages:r.menu_pages||[],amenities:split('amenities'),dining_type:'casual_dining',avg_cost_for_two_paise:Math.round(Number(f.get('cost'))*100)};
+  if(!Number.isFinite(patch.avg_cost_for_two_paise)||patch.avg_cost_for_two_paise<0)throw new Error('Enter a valid cost for two.');
+  if(!demo)await rpc('nexora_save_listing',{p_restaurant:r.id,p_changes:patch});onSave({...r,...patch});
+ }catch(e){setError(e instanceof Error?e.message:'Could not save restaurant')}finally{setBusy(false)}}
+ return <><RestaurantImages restaurant={r} demo={demo} onSave={onSave}/><section className="panel"><h2>{r.name}</h2><p className="small muted">Status: {r.status}. Approval and delivery zones are managed by Super Admin.</p><form onSubmit={save}><label>Description<textarea name="description" defaultValue={r.description}/></label><div className="form-row"><label>Preparation time (minutes)<input name="prep" type="number" min="1" max="240" required defaultValue={r.prep_time_min}/></label><label>Cost for two (₹)<input name="cost" type="number" min="0" step=".01" required defaultValue={r.avg_cost_for_two_paise/100||0}/></label></div><label>Contact phone<input name="phone" defaultValue={r.phone||''} placeholder="+919876543210"/></label><label>Cuisines (comma-separated)<input name="cuisines" defaultValue={r.cuisines?.join(', ')} placeholder="North Indian, Continental"/></label><label>Amenities (comma-separated)<input name="amenities" defaultValue={r.amenities?.join(', ')} placeholder="Reservation available, Parking"/></label><label className="checkbox"><input name="closed" type="checkbox" defaultChecked={r.is_temporarily_closed}/>Temporarily closed</label>{error&&<p role="alert" className="error-banner">{error}</p>}<button className="primary" disabled={busy}>{busy?'Saving…':'Save restaurant'}</button><button type="button" className="secondary" onClick={onHours}>Set weekly business hours</button></form></section></>;
+}

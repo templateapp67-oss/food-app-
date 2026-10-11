@@ -1,0 +1,212 @@
+[
+  {
+    "name": "Dum Chicken Biryani",
+    "file": "/images/dum-chicken-biryani.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Photorealistic top-down Dum Chicken Biryani in a white ceramic bowl; saffron basmati, cooked chicken, coriander, caramelized onions, raita; natural light; no text."
+  },
+  {
+    "name": "Paneer Biryani",
+    "file": "/images/paneer-biryani.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Paneer Biryani served on a white ceramic bowl. basmati rice, visible paneer cubes, mint and fried onions. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Butter Chicken",
+    "file": "/images/butter-chicken.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Butter Chicken served on a traditional copper bowl. visible tender cooked chicken in orange tomato cream sauce, a cream swirl and coriander, naan alongside. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Garlic Naan",
+    "file": "/images/garlic-naan.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Garlic Naan served on a wooden platter. four blistered tandoor naan breads with chopped garlic, melted butter and coriander. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Margherita Pizza",
+    "file": "/images/margherita-pizza.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Margherita Pizza served on a round wooden pizza board. thin crust pizza, melted mozzarella, tomato sauce and fresh basil. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Farmhouse Pizza",
+    "file": "/images/farmhouse-pizza.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Farmhouse Pizza served on a round wooden pizza board. thin crust pizza with bell pepper, mushrooms, onion, tomato and melted cheese. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Pesto Pasta",
+    "file": "/images/pesto-pasta.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Pesto Pasta served on a white shallow ceramic bowl. fusilli pasta coated with basil pesto, parmesan shavings and cherry tomatoes. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Garlic Bread",
+    "file": "/images/garlic-bread.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Garlic Bread served on a wooden plate. toasted baguette slices with garlic butter, parsley and crisp golden edges. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Buddha Bowl",
+    "file": "/images/buddha-bowl.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Buddha Bowl served on a white ceramic bowl. brown rice, roasted vegetables, chickpeas, spinach and tahini drizzle. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Avocado Salad",
+    "file": "/images/avocado-salad.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Avocado Salad served on a white ceramic plate. avocado slices, cherry tomatoes, cucumber, leafy greens and lemon dressing. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Protein Bowl",
+    "file": "/images/protein-bowl.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Protein Bowl served on a white ceramic bowl. clearly visible grilled chicken pieces, quinoa, chickpeas, roasted vegetables and fresh greens. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Berry Smoothie",
+    "file": "/images/berry-smoothie.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Berry Smoothie served on a tall clear glass. thick purple berry smoothie, fresh berries on top, blueberries and strawberries nearby. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Classic Chicken Burger",
+    "file": "/images/classic-chicken-burger.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Classic Chicken Burger served on a white ceramic plate. cooked chicken patty, lettuce, tomato, cheese in toasted sesame bun. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Paneer Crunch Burger",
+    "file": "/images/paneer-crunch-burger.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Paneer Crunch Burger served on a white ceramic plate. crispy breaded paneer patty, lettuce, tomato and creamy sauce in toasted sesame bun. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Loaded Fries",
+    "file": "/images/loaded-fries.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food vegetarian Loaded Fries card. A high quality photorealistic top-down photograph of golden potato fries with smooth melted yellow cheese, sliced green jalapenos and chopped fresh green spring onions ONLY, in a white ceramic bowl on warm neutral tabletop. This is strictly vegetarian: absolutely no bacon, no meat, no brown crumbles, no meat substitutes. Natural appetizing window light, clear fresh ingredients, landscape 3:2, no text, logos or watermark."
+  },
+  {
+    "name": "Chocolate Shake",
+    "file": "/images/chocolate-shake.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Chocolate Shake served on a tall clear glass. rich chocolate milkshake with whipped cream and chocolate shavings. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Dal Makhani",
+    "file": "/images/dal-makhani.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Dal Makhani served on a traditional copper bowl. slow cooked black lentils in rich brown creamy gravy, cream swirl and coriander. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Paneer Tikka",
+    "file": "/images/paneer-tikka.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Paneer Tikka served on a white ceramic platter. charred orange marinated paneer cubes, bell peppers and onion, mint chutney alongside. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Chole Bhature",
+    "file": "/images/chole-bhature.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Chole Bhature served on a stainless steel thali. two puffed golden bhature, bowl of chickpea curry, onion rings and pickle. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. No text, no logo, no watermark."
+  },
+  {
+    "name": "Tandoori Roti",
+    "file": "/images/tandoori-roti.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Tandoori Roti served on a wooden plate. whole wheat tandoori rotis with blistered charred spots, butter and soft rustic texture. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. Vegetarian food, no meat. No text, no logo, no watermark."
+  },
+  {
+    "name": "Masala Dosa",
+    "file": "/images/masala-dosa.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Masala Dosa served on a white ceramic plate. crisp golden dosa with visible spiced potato filling, coconut chutney and sambar alongside. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. Vegetarian food, no meat. No text, no logo, no watermark."
+  },
+  {
+    "name": "Idli Sambar",
+    "file": "/images/idli-sambar.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Idli Sambar served on a white ceramic plate. four soft white steamed idlis, small sambar bowl and coconut chutney. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. Vegetarian food, no meat. No text, no logo, no watermark."
+  },
+  {
+    "name": "Medu Vada",
+    "file": "/images/medu-vada.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Medu Vada served on a white ceramic plate. four golden crispy ring shaped lentil vadas, coconut chutney and sambar. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. Vegetarian food, no meat. No text, no logo, no watermark."
+  },
+  {
+    "name": "Filter Coffee",
+    "file": "/images/filter-coffee.webp",
+    "type": "dish",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: Nexora Food dish card. High-quality photorealistic top-down food photograph of Filter Coffee served on a traditional stainless steel tumbler and dabarah. frothy South Indian coffee in shiny steel tumbler, warm brown liquid. Natural appetizing window light, fresh clearly visible ingredients, warm neutral tabletop. Single dish fills central 75 percent. Landscape 3:2 photo. Vegetarian food, no meat. No text, no logo, no watermark."
+  },
+  {
+    "name": "The Biryani House",
+    "file": "/images/the-biryani-house.webp",
+    "type": "restaurant",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: fictional restaurant concept image for Nexora Food DEMO. A high-quality authentic-looking daytime exterior photograph of a fictional Jaipur neighbourhood restaurant named \"The Biryani House\". warm cream stucco frontage with an arched entrance, dark wood door and brass details. Main sign reads exactly \"The Biryani House\". One or two adult diners seated outside, natural candid details, inviting atmosphere, warm daylight, realistic Indian urban street setting. Landscape 3:2 eye-level photograph, clear facade fills central frame, no promotional discounts, no Swiggy branding, no watermark. This is an invented storefront, not a depiction of any real business."
+  },
+  {
+    "name": "Dough & Co.",
+    "file": "/images/dough-and-co.webp",
+    "type": "restaurant",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: fictional restaurant concept image for Nexora Food DEMO. A high-quality authentic-looking daytime exterior photograph of a fictional Jaipur neighbourhood restaurant named \"Dough & Co.\". modern brick and glass pizzeria frontage with wood accents and a visible warm wood-fired pizza oven inside. Main sign reads exactly \"Dough & Co.\". One or two adult diners seated outside, natural candid details, inviting atmosphere, warm daylight, realistic Indian urban street setting. Landscape 3:2 eye-level photograph, clear facade fills central frame, no promotional discounts, no Swiggy branding, no watermark. This is an invented storefront, not a depiction of any real business."
+  },
+  {
+    "name": "Green Table",
+    "file": "/images/green-table.webp",
+    "type": "restaurant",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: fictional restaurant concept image for Nexora Food DEMO. A high-quality authentic-looking daytime exterior photograph of a fictional Jaipur neighbourhood restaurant named \"Green Table\". airy contemporary cafe with sage green frontage, lush potted plants, light wood furniture and a welcoming entrance. Main sign reads exactly \"Green Table\". One or two adult diners seated outside, natural candid details, inviting atmosphere, warm daylight, realistic Indian urban street setting. Landscape 3:2 eye-level photograph, clear facade fills central frame, no promotional discounts, no Swiggy branding, no watermark. This is an invented storefront, not a depiction of any real business."
+  },
+  {
+    "name": "Burger Theory",
+    "file": "/images/burger-theory.webp",
+    "type": "restaurant",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: fictional restaurant concept image for Nexora Food DEMO. A high-quality authentic-looking daytime exterior photograph of a fictional Jaipur neighbourhood restaurant named \"Burger Theory\". modern charcoal storefront with orange accents, large inviting windows and casual wooden outdoor seating. Main sign reads exactly \"Burger Theory\". One or two adult diners seated outside, natural candid details, inviting atmosphere, warm daylight, realistic Indian urban street setting. Landscape 3:2 eye-level photograph, clear facade fills central frame, no promotional discounts, no Swiggy branding, no watermark. This is an invented storefront, not a depiction of any real business."
+  },
+  {
+    "name": "Punjab Kitchen",
+    "file": "/images/punjab-kitchen.webp",
+    "type": "restaurant",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: fictional restaurant concept image for Nexora Food DEMO. A high-quality authentic-looking daytime exterior photograph of a fictional Jaipur neighbourhood restaurant named \"Punjab Kitchen\". rustic Indian restaurant entrance with terracotta and brick walls, warm wooden doors and brass lamps. Main sign reads exactly \"Punjab Kitchen\". One or two adult diners seated outside, natural candid details, inviting atmosphere, warm daylight, realistic Indian urban street setting. Landscape 3:2 eye-level photograph, clear facade fills central frame, no promotional discounts, no Swiggy branding, no watermark. This is an invented storefront, not a depiction of any real business."
+  },
+  {
+    "name": "South Street",
+    "file": "/images/south-street.webp",
+    "type": "restaurant",
+    "generator": "built-in imagegen",
+    "prompt": "Use case: photorealistic-natural. Asset: fictional restaurant concept image for Nexora Food DEMO. A high-quality authentic-looking daytime exterior photograph of a fictional Jaipur neighbourhood restaurant named \"South Street\". simple South Indian cafe frontage, cream walls, teak wood door, green plants and comfortable outdoor seating. Main sign reads exactly \"South Street\". One or two adult diners seated outside, natural candid details, inviting atmosphere, warm daylight, realistic Indian urban street setting. Landscape 3:2 eye-level photograph, clear facade fills central frame, no promotional discounts, no Swiggy branding, no watermark. This is an invented storefront, not a depiction of any real business."
+  }
+]

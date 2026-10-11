@@ -1,0 +1,2 @@
+import{describe,it,expect}from'vitest';import{validPhone,cartCount,money}from'./model';
+describe('Boundary utilities',()=>{it('validates Indian mobile numbers without accepting incomplete entries',()=>{expect(validPhone('9876543210')).toBe(true);expect(validPhone('1234567890')).toBe(false);expect(validPhone('987654321')).toBe(false)});it('counts quantities and formats integer paise',()=>{expect(cartCount([{item_id:'one',quantity:3},{item_id:'two',quantity:2}])).toBe(5);expect(money(12950)).toContain('129.50')})});
