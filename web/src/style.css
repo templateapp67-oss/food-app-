@@ -22,3 +22,17 @@
 select option{background:var(--surface);color:var(--text)}.rd-review-list{display:grid;gap:12px}.rd-review-list article{border:1px solid var(--line);border-radius:12px;padding:16px}.avatar img{display:block}
 
 .restaurant-images .section-heading h2{margin-bottom:6px}.restaurant-images .section-heading p{margin:0}.photo-upload-group{padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:16px}.photo-picker{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px dashed var(--accent);border-radius:12px;padding:16px;cursor:pointer;font-weight:650;min-height:48px;flex-wrap:wrap}.photo-picker input{width:100%;padding:6px 0;border:0;background:transparent;cursor:pointer}.upload-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:16px}.upload-preview{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--line)}.upload-preview img{width:100%;height:135px;display:block;object-fit:cover}.upload-preview button{position:absolute;right:5px;top:5px;background:#fff;color:#a62020;border-radius:8px;min-width:44px;min-height:44px;display:grid;place-items:center}.upload-preview span{display:block;padding:7px;background:#e8f7ef;color:#146a40;font-size:12px}.restaurant-images>.primary{margin-top:15px;min-height:48px}@media(max-width:760px){.photo-picker input{font-size:16px}.restaurant-images .section-heading{align-items:flex-start}.upload-preview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* The global search adds a second header row on smaller screens. */
+@media(max-width:850px){
+ .topbar{height:auto;min-height:72px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+ .rd-global-search{order:3;flex:1 1 100%;min-width:0;max-width:none}
+}
+@media(max-width:760px){
+ .customer-nav{gap:10px}
+ .customer-nav>div{min-width:0;flex:1;overflow-x:auto;gap:16px}
+ .customer-nav>div>button{flex-shrink:0;white-space:nowrap;min-height:44px}
+ .cart-nav{flex-shrink:0;min-height:44px}
+ .topbar .address-pill{min-width:0}
+ .hero-copy{min-width:0}
+}

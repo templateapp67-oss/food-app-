@@ -72,4 +72,73 @@ import org.json.JSONObject
 @Composable private fun SummaryRow(label:String,amount:Long){Row(Modifier.fillMaxWidth().padding(vertical=7.dp),horizontalArrangement=Arrangement.SpaceBetween){Text(label);Text(money(amount),fontWeight=FontWeight.SemiBold)}}
 @Composable private fun DishCard(d:Dish,quantity:Int,onAdd:()->Unit,onRemove:()->Unit,demo:Boolean=false){Card(Modifier.fillMaxWidth()){Column(Modifier.padding(20.dp)){DemoPhoto(d.name,demo);Text(if(d.veg)"● Vegetarian"else"● Non-vegetarian",fontSize=10.sp,color=if(d.veg)MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error);Text(d.name,fontSize=19.sp,fontWeight=FontWeight.Bold);Text(d.description,fontSize=12.sp,modifier=Modifier.padding(vertical=10.dp),color=MaterialTheme.colorScheme.onSurfaceVariant);Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically){Text(money(d.pricePaise),fontWeight=FontWeight.Bold);if(quantity>0)Row(verticalAlignment=Alignment.CenterVertically){TextButton(onClick=onRemove){Text("−")};Text(quantity.toString());TextButton(onClick=onAdd){Text("+")}}else Button(onClick=onAdd,enabled=d.available){Text(stringResource(R.string.add))}}}}}
 @Composable private fun ProfileEditor(profile:Profile?,vm:FoodViewModel){var name by remember(profile?.name){mutableStateOf(profile?.name.orEmpty())};var email by remember(profile?.email){mutableStateOf(profile?.email.orEmpty())};Column(verticalArrangement=Arrangement.spacedBy(14.dp)){OutlinedTextField(name,{name=it},label={Text("Name")},modifier=Modifier.fillMaxWidth());OutlinedTextField(email,{email=it},label={Text("Email")},readOnly=!vm.demo,modifier=Modifier.fillMaxWidth());Button(onClick={vm.saveProfile(name,email)}){Text("Save profile")}}}
-@Composable private fun AddressDialog(vm:FoodViewModel,addresses:List<Address>,onSelect:(String)->Unit,onDismiss:()->Unit){var add by remember{mutableStateOf(false)};var street by remember{mutableStateOf("")};var area by remember{mutableStateOf("")};var areaMenu by remember{mutableStateOf(false)};var pin by remember{mutableStateOf("")};var lat by remember{mutableStateOf("")};var lng by remember{mutableStateOf("")};var error by remember{mutableStateOf("")};AlertDialog(onDismissRequest=onDismiss,title={Text("Delivery in Jaipur")},text={LazyColumn(verticalArrangement=Arrangement.spacedBy(10.dp)){items(addresses.filter{ServiceArea.supports(it.city)}){a->TextButton(onClick={onSelect(a.id)}){Text("${a.line1}, ${a.locality}, ${a.city} ${a.pincode}")}};if(add)item{OutlinedTextField(street,{street=it},label={Text("House / street")});Box{OutlinedButton(onClick={areaMenu=true}){Text(area.ifBlank{"Choose Jaipur area"})};DropdownMenu(expanded=areaMenu,onDismissRequest={areaMenu=false}){ServiceArea.localities.forEach{locality->DropdownMenuItem(text={Text(locality)},onClick={area=locality;areaMenu=false})}}};Text("Jaipur, Rajasthan · Food ordering");OutlinedTextField(pin,{pin=it},label={Text("PIN code")});OutlinedTextField(lat,{lat=it},label={Text("Latitude")});OutlinedTextField(lng,{lng=it},label={Text("Longitude")});if(error.isNotBlank())Text(error,color=MaterialTheme.colorScheme.error)}}},confirmButton={TextButton(onClick={if(!add)add=true else{if(street.isBlank()||area !in ServiceArea.localities||!Regex("^[1-9][0-9]{5}$").matches(pin)||lat.toDoubleOrNull()==null||lng.toDoubleOrNull()==null){error="Enter your street, Jaipur area, valid PIN code and coordinates.";return@TextButton};vm.saveAddress(JSONObject().put("type","home").put("line1",street).put("locality",area).put("city",ServiceArea.city).put("state",ServiceArea.state).put("pincode",pin).put("latitude",lat.toDouble()).put("longitude",lng.toDouble()));add=false}},enabled=!vm.demo){Text(if(add)"Save address"else"Add address")},dismissButton={TextButton(onClick=onDismiss){Text("Close")}})}
+@Composable
+private fun AddressDialog(
+ vm: FoodViewModel,
+ addresses: List<Address>,
+ onSelect: (String) -> Unit,
+ onDismiss: () -> Unit
+) {
+ var add by remember { mutableStateOf(false) }
+ var street by remember { mutableStateOf("") }
+ var area by remember { mutableStateOf("") }
+ var areaMenu by remember { mutableStateOf(false) }
+ var pin by remember { mutableStateOf("") }
+ var lat by remember { mutableStateOf("") }
+ var lng by remember { mutableStateOf("") }
+ var error by remember { mutableStateOf("") }
+ AlertDialog(
+  onDismissRequest = onDismiss,
+  title = { Text("Delivery in Jaipur") },
+  text = {
+   LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    items(addresses.filter { ServiceArea.supports(it.city) }) { address ->
+     TextButton(onClick = { onSelect(address.id) }) {
+      Text("${address.line1}, ${address.locality}, ${address.city} ${address.pincode}")
+     }
+    }
+    if (add) {
+     item {
+      OutlinedTextField(street, { street = it }, label = { Text("House / street") })
+      Box {
+       OutlinedButton(onClick = { areaMenu = true }) { Text(area.ifBlank { "Choose Jaipur area" }) }
+       DropdownMenu(expanded = areaMenu, onDismissRequest = { areaMenu = false }) {
+        ServiceArea.localities.forEach { locality ->
+         DropdownMenuItem(text = { Text(locality) }, onClick = { area = locality; areaMenu = false })
+        }
+       }
+      }
+      Text("Jaipur, Rajasthan · Food ordering")
+      OutlinedTextField(pin, { pin = it }, label = { Text("PIN code") })
+      OutlinedTextField(lat, { lat = it }, label = { Text("Latitude") })
+      OutlinedTextField(lng, { lng = it }, label = { Text("Longitude") })
+      if (error.isNotBlank()) Text(error, color = MaterialTheme.colorScheme.error)
+     }
+    }
+   }
+  },
+  confirmButton = {
+   TextButton(
+    enabled = !vm.demo,
+    onClick = {
+     if (!add) {
+      add = true
+     } else {
+      val latitude = lat.toDoubleOrNull()
+      val longitude = lng.toDoubleOrNull()
+      if (street.isBlank() || area !in ServiceArea.localities || !Regex("^302[0-9]{3}$").matches(pin)
+       || latitude == null || longitude == null || latitude !in 26.5..27.4 || longitude !in 75.3..76.3) {
+       error = "Enter your street, Jaipur area, 302xxx PIN code and Jaipur coordinates."
+      } else {
+       vm.saveAddress(JSONObject().put("type", "home").put("line1", street).put("locality", area)
+        .put("city", ServiceArea.city).put("state", ServiceArea.state).put("pincode", pin)
+        .put("latitude", latitude).put("longitude", longitude))
+       add = false
+      }
+     }
+    }
+   ) { Text(if (add) "Save address" else "Add address") }
+  },
+  dismissButton = { TextButton(onClick = onDismiss) { Text("Close") } }
+ )
+}
