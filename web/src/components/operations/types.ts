@@ -1,0 +1,14 @@
+import type {Order,Restaurant,Profile} from '../../model';
+export type OpsRole='admin'|'restaurant'|'rider';
+export type Rider={user_id:string;name:string;phone?:string;is_active:boolean;is_online:boolean};
+export type Dispatch={id:string;order_id:string;partner_id:string;status:string;dispatch_state:string;delivery_pay_paise:number;assigned_at:string};
+export type Document={id:string;restaurant_id:string;kind:string;storage_path:string;status:string;review_note?:string};
+export type RestaurantEarning={order_id:string;restaurant_id:string;gross_paise:number;commission_paise:number;net_paise:number;state:string;earned_at?:string;settlement_id?:string};
+export type RiderEarning={order_id:string;partner_id:string;delivery_paise:number;tip_paise:number;earned_at:string};
+export type Settlement={id:string;restaurant_id:string;period_start:string;period_end:string;gross_paise:number;commission_paise:number;net_payable_paise:number;status:string;paid_ref?:string};
+export type Coupon={id:string;code:string;type:string;value:number;min_order_paise:number;max_discount_paise:number;ends_at:string;is_active:boolean};
+export type Snapshot={metrics:{orders:number;gmv:number;active:number};orders:Order[];restaurants:(Restaurant&{commission_bps?:number})[];riders:Rider[];assignments:Dispatch[];documents:Document[];restaurantLedger:RestaurantEarning[];riderLedger:RiderEarning[];settlements:Settlement[];settings:Record<string,number|boolean>;coupons:Coupon[]};
+export type OperationsProps={role:OpsRole;section:string;demo:boolean;restaurant?:Restaurant;profile:Profile|null;orders:Order[];restaurants:Restaurant[];onOrders:(orders:Order[])=>void;onRestaurant:(r:Restaurant)=>void};
+export const emptySnapshot:Snapshot={metrics:{orders:0,gmv:0,active:0},orders:[],restaurants:[],riders:[],assignments:[],documents:[],restaurantLedger:[],riderLedger:[],settlements:[],settings:{},coupons:[]};
+export const indiaDay=(value:string)=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));
+export const today=()=>indiaDay(new Date().toISOString());

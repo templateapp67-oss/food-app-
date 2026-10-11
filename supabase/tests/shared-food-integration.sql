@@ -60,7 +60,10 @@ select public.nexora_food_admin_assign_rider((ordered->>'id')::uuid,rider,'trans
 select set_config('request.jwt.claim.sub',(select rider::text from food_fixture),true);
 do $$begin if(select count(*)from public.nexora_food_orders)<>1 then raise exception 'Assigned rider cannot see delivery';end if;end$$;
 select public.nexora_food_rider_location((ordered->>'id')::uuid,26.9124,75.7873)from food_fixture;
-select public.nexora_food_transition_order((ordered->>'id')::uuid,'out_for_delivery')from food_fixture;
+select public.nexora_food_operations_action('rider_stage',jsonb_build_object('order_id',ordered->>'id','stage','accepted'))from food_fixture;
+select public.nexora_food_operations_action('rider_stage',jsonb_build_object('order_id',ordered->>'id','stage','reached_restaurant'))from food_fixture;
+select public.nexora_food_operations_action('rider_stage',jsonb_build_object('order_id',ordered->>'id','stage','picked_up'))from food_fixture;
+select public.nexora_food_operations_action('rider_stage',jsonb_build_object('order_id',ordered->>'id','stage','out_for_delivery'))from food_fixture;
 select set_config('request.jwt.claim.sub',(select admin::text from food_fixture),true);
 select public.nexora_food_admin_access(rider,'rider','revoke',null,'test revoke')from food_fixture;
 select set_config('request.jwt.claim.sub',(select rider::text from food_fixture),true);

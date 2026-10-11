@@ -35,6 +35,7 @@ jobs:
    - run: supabase start
    - run: supabase db reset
    - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/shared-food-integration.sql
+   - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/operations-integration.sql
 
  browser:
   runs-on: ubuntu-latest

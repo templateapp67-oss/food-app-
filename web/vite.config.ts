@@ -1,2 +1,3 @@
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
-export default defineConfig({root:'web',envDir:'..',build:{outDir:'../dist',emptyOutDir:true}});
+export default defineConfig({plugins:[tailwindcss()],root:'web',envDir:'..',build:{outDir:'../dist',emptyOutDir:true}});

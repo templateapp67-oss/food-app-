@@ -97,3 +97,27 @@ test('restaurant cards open dedicated links and menu search survives route navig
  await page.goBack();await expect(page.getByRole('heading',{level:1,name:'Dough & Co.'})).toBeVisible();
  await page.goForward();await expect(page.getByRole('button',{name:'View Dough & Co.'})).toBeVisible();
 });
+
+
+test('restaurant workspace persists preparation and menu stock and fits mobile',async({page})=>{
+ await page.getByLabel('Workspace').selectOption('restaurant');
+ await page.getByLabel('Preparation time (minutes)').fill('35');
+ await page.getByLabel('Pause new orders').check();
+ await page.getByRole('button',{name:'Save kitchen status'}).click();
+ await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.restaurants')||'[]')[0].prep_time_min)).toBe(35);
+ await page.getByRole('button',{name:'Menu',exact:true}).click();
+ const stock=page.getByRole('button',{name:'Toggle availability Dum Chicken Biryani'});await stock.click();await expect(stock).toHaveAttribute('aria-pressed','false');
+ await page.reload();await page.getByRole('button',{name:'Menu',exact:true}).click();await expect(page.getByRole('button',{name:'Toggle availability Dum Chicken Biryani'})).toHaveAttribute('aria-pressed','false');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
+});
+
+test('admin dispatch and rider delivery lifecycle persist through all three workspaces',async({page})=>{
+ await page.getByLabel('Workspace').selectOption('rider');await page.getByRole('switch').click();await expect(page.getByRole('switch')).toHaveAttribute('aria-checked','true');
+ await page.getByLabel('Workspace').selectOption('admin');await page.getByRole('button',{name:'Dispatch',exact:true}).click();await page.getByLabel('Management reason').fill('Browser fixture delivery');await page.getByLabel('Online available rider').selectOption('demo-user');await page.getByRole('button',{name:'Send dispatch request'}).click();await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.operations')||'{}').assignments?.length)).toBe(1);
+ await page.getByLabel('Workspace').selectOption('restaurant');await page.getByRole('button',{name:'Ready for pickup'}).click();
+ await page.getByLabel('Workspace').selectOption('rider');
+ for(const name of ['Accept delivery','Reached restaurant','Picked up','Out for delivery','Delivered · COD collected'])await page.getByRole('button',{name,exact:true}).click();
+ await page.getByRole('button',{name:'Earnings',exact:true}).click();await expect(page.getByText('Delivery earnings & tips')).toBeVisible();await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.orders')||'[]')[0].status)).toBe('delivered');
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.operations')||'{}').riderLedger.length)).toBe(1);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
+});

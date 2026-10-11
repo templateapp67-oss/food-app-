@@ -1,0 +1,1 @@
+create index food_documents_uploader on public.nexora_food_restaurant_documents(uploaded_by);
