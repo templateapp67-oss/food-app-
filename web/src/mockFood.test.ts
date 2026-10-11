@@ -1,0 +1,5 @@
+import {it,expect} from 'vitest';
+import {mockRestaurants,popularFoods,remainingMockRestaurants} from './mockFood';
+import type {Restaurant} from './model';
+it('seeds ten distinct Jaipur areas and twenty distinct illustrated foods',()=>{expect(mockRestaurants).toHaveLength(10);expect(new Set(mockRestaurants.map(r=>r.address)).size).toBe(10);expect(popularFoods).toHaveLength(20);expect(new Set(popularFoods.map(i=>i.name)).size).toBe(20);expect(popularFoods.every(i=>i.image_url&&i.is_demo&&!i.is_available)).toBe(true);expect(new Set(popularFoods.map(i=>i.description)).size).toBe(7)});
+it('replaces only the area with an active real restaurant and retains other samples',()=>{const real={id:'real',city:'Jaipur',address:'24 C-Scheme, Jaipur',status:'active'}as Restaurant;expect(remainingMockRestaurants([real])).toHaveLength(9);expect(remainingMockRestaurants([real]).some(r=>r.address.startsWith('C Scheme'))).toBe(false);expect(remainingMockRestaurants([{...real,status:'pending'}])).toHaveLength(10);expect(remainingMockRestaurants([{...real,is_demo:true}])).toHaveLength(10)});
