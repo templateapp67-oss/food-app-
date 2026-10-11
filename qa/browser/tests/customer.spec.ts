@@ -87,7 +87,7 @@ test('restaurant cards open dedicated links and menu search survives route navig
  await activate(page.getByRole('button',{name:'View Dough & Co.'}),!!info.project.use.hasTouch);
  await expect(page).toHaveURL(/#\/restaurant\/demo-r2$/);
  await expect(page.getByRole('heading',{level:1,name:'Dough & Co.'})).toBeVisible();
- await page.getByRole('button',{name:'Menu',exact:true}).click();
+ await page.getByRole('navigation',{name:'Restaurant sections'}).getByRole('button',{name:'Menu',exact:true}).click();
  await page.getByLabel('Search this restaurant menu').fill('Farmhouse');
  await expect(page.getByRole('img',{name:'Farmhouse Pizza',exact:true})).toBeVisible();
  await expect(page.getByRole('img',{name:'Margherita Pizza',exact:true})).toHaveCount(0);
