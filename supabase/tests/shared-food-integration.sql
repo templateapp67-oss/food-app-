@@ -10,6 +10,8 @@ insert into public.nexora_food_user_roles(user_id,role)select admin,'super_admin
 set local role authenticated;
 select set_config('request.jwt.claim.sub',(select customer::text from food_fixture),true);
 do $$begin
+ if(select count(*)from public.nexora_food_locations where is_active)<126 then raise exception 'Jaipur locality catalog missing';end if;
+ perform public.nexora_food_save_address('{"type":"other","line1":"24 Added Test Street","locality":"Chomu","pincode":"303702","latitude":27.082,"longitude":75.723}');
  if(select count(*)from public.nexora_food_profiles)<>1 then raise exception 'Profile isolation failed';end if;
  if exists(select 1 from public.nexora_food_user_roles where role<>'customer')then raise exception 'Metadata role escalation';end if;
  begin perform public.nexora_food_admin_role((select customer from food_fixture),'super_admin','attempted escalation');raise exception 'Role escalation allowed';exception when others then if sqlerrm='Role escalation allowed'then raise;end if;end;

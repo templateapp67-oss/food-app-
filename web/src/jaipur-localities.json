@@ -1,0 +1,892 @@
+[
+  {
+    "name": "Vaishali Nagar",
+    "lat": 26.903,
+    "lng": 75.7423,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Malviya Nagar",
+    "lat": 26.853,
+    "lng": 75.817,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "C Scheme",
+    "lat": 26.911,
+    "lng": 75.803,
+    "zone": "Central",
+    "aliases": [
+      "C-Scheme"
+    ]
+  },
+  {
+    "name": "Civil Lines",
+    "lat": 26.906,
+    "lng": 75.787,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Bani Park",
+    "lat": 26.929,
+    "lng": 75.795,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Raja Park",
+    "lat": 26.898,
+    "lng": 75.831,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Mansarovar",
+    "lat": 26.855,
+    "lng": 75.766,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Jhotwara",
+    "lat": 26.945,
+    "lng": 75.758,
+    "zone": "North-West",
+    "aliases": []
+  },
+  {
+    "name": "Tonk Road",
+    "lat": 26.875,
+    "lng": 75.795,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Jagatpura",
+    "lat": 26.822,
+    "lng": 75.864,
+    "zone": "South-East",
+    "aliases": []
+  },
+  {
+    "name": "Pratap Nagar",
+    "lat": 26.804,
+    "lng": 75.815,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Vidhyadhar Nagar",
+    "lat": 26.96,
+    "lng": 75.782,
+    "zone": "North",
+    "aliases": [
+      "Vidyadhar Nagar"
+    ]
+  },
+  {
+    "name": "Sanganer",
+    "lat": 26.818,
+    "lng": 75.772,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Shyam Nagar",
+    "lat": 26.892,
+    "lng": 75.766,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Gopalpura Bypass",
+    "lat": 26.874,
+    "lng": 75.783,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Pink City",
+    "lat": 26.922,
+    "lng": 75.827,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Bapu Nagar",
+    "lat": 26.892,
+    "lng": 75.814,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Adarsh Nagar",
+    "lat": 26.899,
+    "lng": 75.819,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Ajmeri Gate",
+    "lat": 26.919,
+    "lng": 75.818,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Akshardham Colony",
+    "lat": 26.852,
+    "lng": 75.805,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Ambabari",
+    "lat": 26.946,
+    "lng": 75.771,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Amber",
+    "lat": 26.9859,
+    "lng": 75.8517,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Amrapali Circle",
+    "lat": 26.896,
+    "lng": 75.748,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Anand Vihar",
+    "lat": 26.858,
+    "lng": 75.768,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Arjun Nagar",
+    "lat": 26.905,
+    "lng": 75.823,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Ashok Nagar",
+    "lat": 26.9,
+    "lng": 75.817,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Bajaj Nagar",
+    "lat": 26.885,
+    "lng": 75.812,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Bapu Bazaar",
+    "lat": 26.918,
+    "lng": 75.821,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Barkat Nagar",
+    "lat": 26.883,
+    "lng": 75.815,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Bhawani Singh Zone",
+    "lat": 26.912,
+    "lng": 75.805,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Brahampuri",
+    "lat": 26.934,
+    "lng": 75.829,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Budh Vihar",
+    "lat": 26.95,
+    "lng": 75.765,
+    "zone": "North-West",
+    "aliases": []
+  },
+  {
+    "name": "Chandpole",
+    "lat": 26.926,
+    "lng": 75.814,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Chitrakoot",
+    "lat": 26.882,
+    "lng": 75.745,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Chomu",
+    "lat": 27.082,
+    "lng": 75.723,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Durgapura",
+    "lat": 26.858,
+    "lng": 75.803,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Gandhi Nagar",
+    "lat": 26.883,
+    "lng": 75.805,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Ganga Jamuna Colony",
+    "lat": 26.94,
+    "lng": 75.82,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Gopalpura",
+    "lat": 26.874,
+    "lng": 75.783,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Govindpuri",
+    "lat": 26.866,
+    "lng": 75.798,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Hawa Mahal Bazaar",
+    "lat": 26.9239,
+    "lng": 75.8267,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Hathroi",
+    "lat": 26.916,
+    "lng": 75.807,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Hiran Magri",
+    "lat": 26.845,
+    "lng": 75.825,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Imli Phatak",
+    "lat": 26.903,
+    "lng": 75.792,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Indira Bazaar",
+    "lat": 26.92,
+    "lng": 75.825,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Indira Gandhi Nagar",
+    "lat": 26.962,
+    "lng": 75.789,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Jai Jawan Colony",
+    "lat": 26.888,
+    "lng": 75.823,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Jawahar Nagar",
+    "lat": 26.897,
+    "lng": 75.823,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Johari Bazaar",
+    "lat": 26.919,
+    "lng": 75.826,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Kartarpura",
+    "lat": 26.904,
+    "lng": 75.798,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Khatipura",
+    "lat": 26.934,
+    "lng": 75.76,
+    "zone": "North-West",
+    "aliases": []
+  },
+  {
+    "name": "Kishan Nagar",
+    "lat": 26.921,
+    "lng": 75.772,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Lal Kothi",
+    "lat": 26.895,
+    "lng": 75.805,
+    "zone": "Central",
+    "aliases": [
+      "Lalkothi"
+    ]
+  },
+  {
+    "name": "Laxmi Nagar",
+    "lat": 26.923,
+    "lng": 75.778,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Madhopura",
+    "lat": 26.92,
+    "lng": 75.795,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Maharani Farm",
+    "lat": 26.85,
+    "lng": 75.825,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Mahesh Nagar",
+    "lat": 26.916,
+    "lng": 75.792,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Malviya Nagar Industrial Area",
+    "lat": 26.85,
+    "lng": 75.812,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Mansarovar Extension",
+    "lat": 26.85,
+    "lng": 75.758,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Mansarovar Plaza",
+    "lat": 26.856,
+    "lng": 75.77,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "MI Road",
+    "lat": 26.915,
+    "lng": 75.817,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Muhana",
+    "lat": 26.81,
+    "lng": 75.755,
+    "zone": "South-West",
+    "aliases": []
+  },
+  {
+    "name": "Murlipura",
+    "lat": 26.954,
+    "lng": 75.775,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Nirman Nagar",
+    "lat": 26.888,
+    "lng": 75.758,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Nishatganj",
+    "lat": 26.925,
+    "lng": 75.82,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Panchyawala",
+    "lat": 26.92,
+    "lng": 75.735,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Ram Nagar",
+    "lat": 26.896,
+    "lng": 75.785,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Rambagh",
+    "lat": 26.897,
+    "lng": 75.803,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Ramesh Marg",
+    "lat": 26.907,
+    "lng": 75.805,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Rani Sati Nagar",
+    "lat": 26.868,
+    "lng": 75.765,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Sardar Patel Marg",
+    "lat": 26.899,
+    "lng": 75.795,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Satya Vihar",
+    "lat": 26.862,
+    "lng": 75.772,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Sawai Jai Singh Highway",
+    "lat": 26.906,
+    "lng": 75.8,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Sawai Mansingh Road",
+    "lat": 26.897,
+    "lng": 75.808,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Shastri Nagar",
+    "lat": 26.928,
+    "lng": 75.778,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Shiv Marg",
+    "lat": 26.904,
+    "lng": 75.788,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Sindhi Camp",
+    "lat": 26.921,
+    "lng": 75.8,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Sitapura",
+    "lat": 26.792,
+    "lng": 75.805,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Sitapura Industrial Area",
+    "lat": 26.788,
+    "lng": 75.8,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Sodala",
+    "lat": 26.907,
+    "lng": 75.791,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Subhash Nagar",
+    "lat": 26.913,
+    "lng": 75.78,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Subhash Chowk",
+    "lat": 26.925,
+    "lng": 75.822,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Sukhdeopura",
+    "lat": 26.938,
+    "lng": 75.77,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Sunder Nagar",
+    "lat": 26.886,
+    "lng": 75.76,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Tilak Nagar",
+    "lat": 26.89,
+    "lng": 75.818,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Tonk Phatak",
+    "lat": 26.876,
+    "lng": 75.797,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Tripolia Bazaar",
+    "lat": 26.924,
+    "lng": 75.82,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Vidyut Nagar",
+    "lat": 26.862,
+    "lng": 75.798,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Vijay Bari",
+    "lat": 26.948,
+    "lng": 75.772,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Vijaywada Colony",
+    "lat": 26.865,
+    "lng": 75.82,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Vinayak Vihar",
+    "lat": 26.87,
+    "lng": 75.755,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Vishwakarma Industrial Area",
+    "lat": 26.968,
+    "lng": 75.76,
+    "zone": "North-West",
+    "aliases": []
+  },
+  {
+    "name": "Wardhman Nagar",
+    "lat": 26.933,
+    "lng": 75.778,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Ajmer Road",
+    "lat": 26.9,
+    "lng": 75.75,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Delhi Road",
+    "lat": 26.96,
+    "lng": 75.8,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Sikar Road",
+    "lat": 26.955,
+    "lng": 75.79,
+    "zone": "North",
+    "aliases": []
+  },
+  {
+    "name": "Agra Road",
+    "lat": 26.93,
+    "lng": 75.85,
+    "zone": "East",
+    "aliases": []
+  },
+  {
+    "name": "Galta Gate",
+    "lat": 26.928,
+    "lng": 75.84,
+    "zone": "East",
+    "aliases": []
+  },
+  {
+    "name": "Ghat Gate",
+    "lat": 26.922,
+    "lng": 75.837,
+    "zone": "East",
+    "aliases": []
+  },
+  {
+    "name": "Jorawar Singh Gate",
+    "lat": 26.93,
+    "lng": 75.832,
+    "zone": "North",
+    "aliases": [
+      "Zorawar Singh Gate"
+    ]
+  },
+  {
+    "name": "New Aatish Market",
+    "lat": 26.87,
+    "lng": 75.785,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Mansarovar Metro Station",
+    "lat": 26.857,
+    "lng": 75.766,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Chandpole Bazaar",
+    "lat": 26.926,
+    "lng": 75.815,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Kishanpole Bazaar",
+    "lat": 26.924,
+    "lng": 75.819,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Nehru Bazaar",
+    "lat": 26.917,
+    "lng": 75.819,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Indra Bazaar",
+    "lat": 26.919,
+    "lng": 75.824,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Sanganeri Gate",
+    "lat": 26.918,
+    "lng": 75.828,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Ghat Darwaza",
+    "lat": 26.921,
+    "lng": 75.836,
+    "zone": "East",
+    "aliases": []
+  },
+  {
+    "name": "Surajpole",
+    "lat": 26.92,
+    "lng": 75.829,
+    "zone": "Central",
+    "aliases": []
+  },
+  {
+    "name": "Naya Khera",
+    "lat": 26.94,
+    "lng": 75.765,
+    "zone": "North-West",
+    "aliases": []
+  },
+  {
+    "name": "Sirsi Road",
+    "lat": 26.93,
+    "lng": 75.73,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Niwaroo",
+    "lat": 26.975,
+    "lng": 75.745,
+    "zone": "North-West",
+    "aliases": []
+  },
+  {
+    "name": "Bindayaka",
+    "lat": 26.89,
+    "lng": 75.715,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Muhana Mandi",
+    "lat": 26.805,
+    "lng": 75.76,
+    "zone": "South-West",
+    "aliases": []
+  },
+  {
+    "name": "Phagi Road",
+    "lat": 26.8,
+    "lng": 75.73,
+    "zone": "South-West",
+    "aliases": []
+  },
+  {
+    "name": "Diggi Road",
+    "lat": 26.79,
+    "lng": 75.78,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Renwal",
+    "lat": 26.87,
+    "lng": 75.68,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Jobner",
+    "lat": 27.06,
+    "lng": 75.32,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Sanganer Airport Area",
+    "lat": 26.828,
+    "lng": 75.805,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Pratap Nagar Housing Board",
+    "lat": 26.81,
+    "lng": 75.818,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Kumbha Marg",
+    "lat": 26.83,
+    "lng": 75.83,
+    "zone": "South-East",
+    "aliases": []
+  },
+  {
+    "name": "Mahal Road",
+    "lat": 26.835,
+    "lng": 75.855,
+    "zone": "South-East",
+    "aliases": []
+  },
+  {
+    "name": "Patrakar Colony",
+    "lat": 26.87,
+    "lng": 75.795,
+    "zone": "South",
+    "aliases": []
+  },
+  {
+    "name": "Mansarovar Sector 1",
+    "lat": 26.86,
+    "lng": 75.77,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Heerapura",
+    "lat": 26.895,
+    "lng": 75.73,
+    "zone": "West",
+    "aliases": []
+  },
+  {
+    "name": "Rohini Nagar",
+    "lat": 26.865,
+    "lng": 75.75,
+    "zone": "West",
+    "aliases": []
+  }
+]

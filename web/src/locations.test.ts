@@ -1,0 +1,5 @@
+import {it,expect} from 'vitest';
+import {jaipurLocalities,findJaipurLocality,inJaipurBounds,validJaipurPin} from './locations';
+import {toWorld,fromWorld} from './DeliveryMap';
+it('includes every uploaded place and resolves duplicate spellings',()=>{expect(jaipurLocalities).toHaveLength(126);expect(findJaipurLocality('C-Scheme')?.name).toBe('C Scheme');expect(findJaipurLocality('Vidyadhar Nagar')?.name).toBe('Vidhyadhar Nagar');expect(findJaipurLocality('Lalkothi')?.name).toBe('Lal Kothi');expect(findJaipurLocality('Zorawar Singh Gate')?.name).toBe('Jorawar Singh Gate');expect(jaipurLocalities).toContain('Jobner');expect(validJaipurPin('303702')).toBe(true);expect(inJaipurBounds(28.6,77.2)).toBe(false)});
+it('converts tapped map positions back into delivery coordinates at all zoom levels',()=>{for(const zoom of [12,16,19]){const world=toWorld(26.903,75.7423,zoom);const point=fromWorld(world.x,world.y,zoom);expect(point.latitude).toBeCloseTo(26.903,8);expect(point.longitude).toBeCloseTo(75.7423,8);expect(fromWorld(world.x+20,world.y,zoom).longitude).toBeGreaterThan(point.longitude)}});

@@ -46,7 +46,7 @@ export default function App(){
  const [coupon,setCoupon]=useState(''),[points,setPoints]=useState(0),[quote,setQuote]=useState<Quote|null>(null);
  const[authLocationId,setAuthLocationId]=useState<string|null>(null);
  const gps=useJaipurLocation(role==='customer'&&!demo,authLocationId);
- const deliveryLabel=gps.busy?gps.status:gps.value?.area&&gps.value.source!=='fallback'?`${gps.value.area}, Jaipur`:address&&isJaipur(address.city)?`${address.locality}, Jaipur`:gps.value?.source==='fallback'?'Jaipur · default hub':gps.value?'Jaipur · area unavailable':'Choose a Jaipur address';
+ const deliveryLabel=gps.busy?gps.status:gps.value?.area&&gps.value.source!=='fallback'?`${gps.value.approximateArea?'Near ':''}${gps.value.area}, Jaipur`:address&&isJaipur(address.city)?`${address.locality}, Jaipur`:gps.value?.source==='fallback'?'Jaipur · default hub':gps.value?'Jaipur · area unavailable':'Choose a Jaipur address';
  const [phone,setPhone]=useState(''),[otp,setOtp]=useState(''),[otpSent,setOtpSent]=useState(false),[cooldown,setCooldown]=useState(0);
  const [targetRestaurant,setTargetRestaurant]=useState<Restaurant|null>(null);
  const [customItem,setCustomItem]=useState<Item|null>(null),[variants,setVariants]=useState<{id:string;name:string;price_delta_paise:number}[]>([]),[addons,setAddons]=useState<{id:string;name:string;price_paise:number;group_id:string}[]>([]),[groups,setGroups]=useState<{id:string;name:string;min_select:number;max_select:number}[]>([]),[chosenVariant,setChosenVariant]=useState(''),[chosenAddons,setChosenAddons]=useState<string[]>([]);
