@@ -1,0 +1,26 @@
+import {useState} from 'react';
+import {MapPin} from 'lucide-react';
+import {jaipurLocalities,launchCity,launchState} from './locations';
+import {locateJaipur,searchJaipurAddress,type JaipurLocation,type AddressMatch} from './geolocation';
+export type DeliveryAddress = {type:string;line1:string;locality:string;city:string;state:string;pincode:string;latitude:number;longitude:number};
+export function DeliveryAddressForm({busy,onSave}:{busy:boolean;onSave:(address:DeliveryAddress)=>Promise<void>}){
+ const [street,setStreet]=useState(''),[area,setArea]=useState(''),[pin,setPin]=useState(''),[type,setType]=useState('home');
+ const [location,setLocation]=useState<JaipurLocation|null>(null),[locked,setLocked]=useState(false),[working,setWorking]=useState(false),[error,setError]=useState(''),[status,setStatus]=useState(''),[matches,setMatches]=useState<AddressMatch[]>([]);
+ const detect=async()=>{setWorking(true);setError('');setStatus('Finding your current location…');setMatches([]);setLocation(null);setLocked(false);try{const value=await locateJaipur(coords=>{setLocation(coords);setStatus('Location found. Finding your address…')});setLocation(value);if(jaipurLocalities.some(area=>area===value.area)){setArea(value.area);setLocked(true)}if(value.pincode)setPin(value.pincode);if(value.street)setStreet(old=>old||value.street);setStatus('Current location found. Add your house / flat and check the address.');setError(value.warning||'')}catch(e){setStatus('');setError(e instanceof Error?e.message:'Could not find your location. Enter your address below.')}finally{setWorking(false)}};
+ const changed=()=>{setMatches([]);if(location?.accuracy===0){setLocation(null);setLocked(false);setStatus('')}};
+ return <form onSubmit={async e=>{e.preventDefault();if(working||busy)return;setError('');if(!/^302\d{3}$/.test(pin)){setError('Enter a Jaipur PIN code starting with 302.');return}setWorking(true);try{if(!location){setStatus('Finding the address you entered…');const found=await searchJaipurAddress(street,area,pin);setMatches(found);setStatus('Choose and confirm the delivery location below.');return}await onSave({type,line1:street.trim(),locality:area,city:launchCity,state:launchState,pincode:pin,latitude:location.latitude,longitude:location.longitude})}catch(e){setStatus('');setError(e instanceof Error?e.message:'Could not save your address. Please retry.')}finally{setWorking(false)}}}>
+ <button type="button" className="primary full" disabled={working||busy} onClick={()=>void detect()}><MapPin size={18}/>{working?'Finding location…':'Use current location'}</button>
+ <p className="small muted">Allow location when your browser asks. We will find your area; you only need to add your house / flat. You can also enter an address below.</p>
+ {status&&<p role="status">{status}</p>}{error&&<p role="alert">{error}</p>}
+ <input type="hidden" name="latitude" value={location?.latitude??''}/><input type="hidden" name="longitude" value={location?.longitude??''}/>
+ <label>House / flat and street<input name="line1" required maxLength={200} placeholder="24, Park Avenue" value={street} onChange={e=>{setStreet(e.target.value);changed()}}/></label>
+ <label htmlFor="delivery-locality">Jaipur area / locality</label><select id="delivery-locality" required disabled={locked} value={area} onChange={e=>{setArea(e.target.value);changed()}}><option value="" disabled>Choose your Jaipur area</option>{jaipurLocalities.map(a=><option key={a}>{a}</option>)}</select>
+ <label>PIN code<input name="pincode" required inputMode="numeric" maxLength={6} placeholder="302001" value={pin} onChange={e=>{setPin(e.target.value.replace(/\D/g,''));changed()}}/></label>
+ <div className="form-row"><label>City<input value={launchCity} readOnly/></label><label>State<input value={launchState} readOnly/></label></div>
+ {locked&&<button type="button" className="secondary" onClick={()=>{setLocked(false);setLocation(null);setStatus('Enter your delivery address. We will find its location when you save.')}}>Change area manually</button>}
+ {matches.length>0&&<section aria-label="Confirm delivery location"><strong>Confirm delivery location</strong><p className="small muted">Check the address on the map before choosing it.</p>{matches.map(match=><div className="address-card" key={`${match.latitude},${match.longitude}`}><div><p>{match.label}</p><a target="_blank" rel="noreferrer" href={`https://www.openstreetmap.org/?mlat=${match.latitude}&mlon=${match.longitude}#map=18/${match.latitude}/${match.longitude}`}>View on map</a><button className="secondary full" type="button" onClick={()=>{setLocation({...match,area,pincode:pin,street,accuracy:0});setMatches([]);setLocked(true);setStatus('Delivery location confirmed. Save your address to continue.')}}>Use this delivery location</button></div></div>)}</section>}
+ <small>Address lookup © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>. Confirm your house and street before saving.</small>
+ <label>Save as<select value={type} onChange={e=>setType(e.target.value)}><option value="home">Home</option><option value="work">Work</option><option value="other">Other</option></select></label>
+ <button className="primary full" disabled={working||busy}>{working?'Please wait…':'Save address'}</button>
+ </form>
+}

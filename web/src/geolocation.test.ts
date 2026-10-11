@@ -1,5 +1,5 @@
 import {beforeEach,afterEach,it,expect,vi} from 'vitest';
-import {locateJaipur} from './geolocation';
+import {locateJaipur,searchJaipurAddress} from './geolocation';
 const gps=vi.fn();beforeEach(()=>{gps.mockReset();localStorage.clear();vi.stubGlobal('navigator',{geolocation:{getCurrentPosition:gps}});gps.mockImplementation((success)=>success({coords:{latitude:26.9124,longitude:75.7873,accuracy:12}}));vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({address:{country_code:'in',city:'Jaipur',suburb:'C Scheme',postcode:'302001'}})}))});afterEach(()=>vi.unstubAllGlobals());
 it('uses high accuracy, reverse geocodes the area and caches repeated requests',async()=>{const value=await locateJaipur();expect(value.area).toBe('C Scheme');expect(value.pincode).toBe('302001');expect(gps.mock.calls[0][2]).toEqual({enableHighAccuracy:true,timeout:15000,maximumAge:60000});await locateJaipur();expect(fetch).toHaveBeenCalledOnce()});
 it('rejects locations outside Jaipur before lookup',async()=>{gps.mockImplementation(success=>success({coords:{latitude:28.61,longitude:77.2,accuracy:20}}));await expect(locateJaipur()).rejects.toThrow('outside Jaipur');expect(fetch).not.toHaveBeenCalled()});
@@ -8,3 +8,12 @@ it('offers manual fallback for permission denial or lookup failure',async()=>{gp
 it('retries an unavailable high-accuracy fix using network positioning',async()=>{gps.mockImplementationOnce((_,reject)=>reject({code:2}));expect((await locateJaipur()).area).toBe('C Scheme');expect(gps.mock.calls[1][2].enableHighAccuracy).toBe(false)});
 it('fills coordinates before a slow lookup and preserves them if lookup fails',async()=>{const fill=vi.fn();vi.mocked(fetch).mockRejectedValue(new Error('network'));const result=await locateJaipur(fill);expect(fill).toHaveBeenCalledWith(expect.objectContaining({latitude:26.9124,longitude:75.7873}));expect(result.warning).toContain('Select your Jaipur area');});
 it('accepts Jaipur municipal address names and tolerates missing locality data',async()=>{vi.mocked(fetch).mockResolvedValue({ok:true,json:async()=>({address:{country_code:'in',city:'Jaipur Municipal Corporation',suburb:'C-Scheme',postcode:'302001'}})}as Response);expect((await locateJaipur()).area).toBe('C Scheme');localStorage.clear();vi.mocked(fetch).mockResolvedValue({ok:true,json:async()=>({address:{country_code:'in',city:'Jaipur'}})}as Response);const result=await locateJaipur();expect(result.area).toBe('');expect(result.latitude).toBe(26.9124);expect(result.warning).toContain('not found')});
+
+it('searches an ordinary Jaipur street address and requires a street-level result',async()=>{
+ vi.mocked(fetch).mockResolvedValue({ok:true,json:async()=>[{lat:'26.9124',lon:'75.7873',type:'house',display_name:'24 Park Avenue, Jaipur',address:{country_code:'in',city:'Jaipur',postcode:'302001',road:'Park Avenue'}}]}as Response);
+ expect(await searchJaipurAddress('24 Park Avenue','C Scheme','302001')).toEqual([{latitude:26.9124,longitude:75.7873,label:'24 Park Avenue, Jaipur'}]);expect(String(vi.mocked(fetch).mock.calls[0][0])).toContain('/search?');
+});
+it('does not save guessed locality centers or addresses outside the supplied Jaipur PIN',async()=>{
+ vi.mocked(fetch).mockResolvedValue({ok:true,json:async()=>[{lat:'26.9124',lon:'75.7873',type:'suburb',address:{country_code:'in',city:'Jaipur',postcode:'302001'}},{lat:'26.9124',lon:'75.7873',type:'house',address:{country_code:'in',city:'Jaipur',postcode:'302017',road:'Park Avenue'}}]}as Response);
+ await expect(searchJaipurAddress('24 Park Avenue','C Scheme','302001')).rejects.toThrow('could not find this street');
+});
