@@ -41,3 +41,30 @@ test('unmapped street can be saved with a customer-selected map pin',async({page
  await page.evaluate(()=>{const native=window.fetch.bind(window);window.fetch=(input,init)=>String(input).startsWith('https://nominatim.openstreetmap.org/search')?Promise.resolve(new Response('[]',{headers:{'Content-Type':'application/json'}})):native(input,init)});
  await page.getByRole('button',{name:'Choose a Jaipur address',exact:true}).click();await page.getByRole('button',{name:'Add a new address'}).click();const area=page.getByLabel('Jaipur area / locality',{exact:true});await expect(area.locator('option')).toHaveCount(127);await area.selectOption('Shyam Nagar');await page.getByLabel('House / flat and street',{exact:true}).fill('24, Unmapped Test Lane');await page.getByLabel('PIN code',{exact:true}).fill('302019');await page.getByRole('button',{name:'Save address',exact:true}).click();await expect(page.getByRole('alert')).toContainText('not mapped yet');const confirm=page.getByRole('button',{name:'Confirm map location',exact:true});await expect(confirm).toBeDisabled();const map=page.getByRole('application',{name:'Delivery map',exact:true});await map.scrollIntoViewIfNeeded();const box=(await map.boundingBox())!;if(info.project.use.hasTouch)await page.touchscreen.tap(box.x+box.width/2+16,box.y+box.height/2+16);else await map.click({position:{x:box.width/2+16,y:box.height/2+16}});await confirm.click();await page.getByRole('button',{name:'Save address',exact:true}).click();await expect(page.getByText('Address saved',{exact:true})).toBeVisible();const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.addresses')||'[]').at(-1));expect(saved.locality).toBe('Shyam Nagar');expect(saved.latitude).not.toBe(26.892);expect(saved.longitude).not.toBe(75.766);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
 });
+
+test('live profile saves a private upload and edited details across reloads',async({page},info)=>{
+ await page.addInitScript(()=>{
+  const native=window.fetch.bind(window),id='00000000-0000-4000-8000-000000000123';
+  window.fetch=async(input,init)=>{
+   const url=String(input);if(!url.startsWith('https://zilwgiuiygqqardzutxi.supabase.co'))return native(input,init);
+   const user={id,email:'qa@example.test',aud:'authenticated',role:'authenticated',created_at:new Date().toISOString(),app_metadata:{provider:'email',providers:['email']},user_metadata:{full_name:'QA customer'}};
+   const payload=btoa(JSON.stringify({sub:id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600}));
+   const profile=JSON.parse(localStorage.getItem('qa.saved-profile')||JSON.stringify({id,full_name:'QA customer',email:user.email,phone:''}));
+   let body:unknown=[];
+   if(url.includes('/auth/v1/token'))body={access_token:`eyJhbGciOiJIUzI1NiJ9.${payload}.test`,refresh_token:'qa-test-refresh',token_type:'bearer',expires_in:3600,user};
+   else if(url.includes('/auth/v1/user'))body=user;
+   else if(url.includes('/storage/v1/object/sign/'))body={signedURL:'/object/sign/nexora-food-avatars/avatar.png?token=qa'};
+   else if(url.includes('/storage/v1/object/nexora-food-avatars/')){localStorage.setItem('qa.upload-path',url.split('/nexora-food-avatars/')[1]);body={Key:'avatar.png'}}
+   else if(url.includes('nexora_food_save_account')){const args=JSON.parse(String(init?.body));profile.full_name=args.p_name;profile.phone=args.p_phone;if(args.p_avatar)profile.avatar_url=args.p_avatar;localStorage.setItem('qa.saved-profile',JSON.stringify(profile));body=null}
+   else if(url.includes('nexora_food_profiles'))body=profile;
+   else if(url.includes('nexora_food_public_config'))body={'cod.enabled':true};
+   else if(url.includes('/rpc/'))body=id;
+   return new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+ });
+ await page.route('**/storage/v1/object/sign/nexora-food-avatars/avatar.png?token=qa',route=>route.fulfill({contentType:'image/png',body:png}));
+ await page.goto('/');await page.getByRole('button',{name:'Sign in / Sign up',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Good food starts with hello.'});await dialog.getByLabel('Email',{exact:true}).fill('qa@example.test');await dialog.getByLabel('Password',{exact:true}).fill('qa-password-123');await dialog.locator('form').getByRole('button',{name:'Sign in',exact:true}).click();await expect(dialog).toHaveCount(0);
+ await activate(page.getByRole('button',{name:'Open profile'}),!!info.project.use.hasTouch);await page.getByLabel('Name',{exact:true}).fill('Updated live customer');await page.getByLabel('Phone',{exact:true}).fill('+91 98765-43210');await page.getByLabel('Profile photo',{exact:true}).setInputFiles({name:'avatar.png',mimeType:'image/png',buffer:png});await expect(page.getByAltText('Selected profile photo')).toBeVisible();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.locator('.profile-details').getByRole('status')).toContainText('Profile saved.');
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('qa.saved-profile')!));expect(saved.phone).toBe('+919876543210');expect(saved.avatar_url).toBe(await page.evaluate(()=>localStorage.getItem('qa.upload-path')));expect(saved.avatar_url).toMatch(/^00000000-0000-4000-8000-000000000123\//);
+ await page.reload();await activate(page.getByRole('button',{name:'Open profile'}),!!info.project.use.hasTouch);await expect(page.getByLabel('Name',{exact:true})).toHaveValue('Updated live customer');await expect(page.getByLabel('Phone',{exact:true})).toHaveValue('+919876543210');await expect(page.getByAltText('Your profile photo')).toBeVisible();await expect(page.getByAltText('Your profile',{exact:true})).toHaveCount(2);
+});
