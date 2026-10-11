@@ -1,6 +1,7 @@
 import {jaipurLocalities,findJaipurLocality,nearestJaipurLocality,inJaipurBounds,validJaipurPin} from './locations';
 import {useCallback,useEffect,useRef,useState} from 'react';
 export type JaipurLocation={latitude:number;longitude:number;area:string;pincode:string;street:string;accuracy:number;warning?:string;approximateArea?:boolean;source?:'gps'|'fallback'|'map'};
+const jaipurAddress=(a:Record<string,unknown>)=>a.country_code==='in'&&([a.city,a.town,a.municipality].some(v=>typeof v==='string'&&/^jaipur(?:\s+(?:municipal corporation|greater|heritage|city))?$/i.test(v))||(a.state==='Rajasthan'&&[a.state_district,a.county].some(v=>typeof v==='string'&&/^jaipur(?:\s+(?:district|rural|urban))?$/i.test(v))));
 const cacheKey='nexora.food.location';
 function cached(){try{const data=JSON.parse(localStorage.getItem(cacheKey)||'null');return data&&Date.now()-data.time<15*60*1000?data.value as JaipurLocation:null}catch{return null}}
 function position(highAccuracy:boolean){return new Promise<GeolocationPosition>((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:highAccuracy,timeout:highAccuracy?15000:10000,maximumAge:highAccuracy?0:300000}))}
@@ -16,9 +17,9 @@ export async function locateJaipur(onPosition?:(value:JaipurLocation)=>void):Pro
  const endpoint=import.meta.env.VITE_GEOCODING_URL||'https://nominatim.openstreetmap.org/reverse';
  let data;try{const url=new URL(endpoint);url.search=new URLSearchParams({format:'jsonv2',lat:String(latitude),lon:String(longitude),zoom:'18',addressdetails:'1','accept-language':'en'}).toString();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(url,{signal:controller.signal,headers:{Accept:'application/json'}});if(!response.ok)throw new Error();data=await response.json()}finally{clearTimeout(timer)}}catch{return {...coordinates,warning:'Current location found. Address lookup is unavailable. Check the nearby Jaipur area and enter your PIN code.'}}
  const a=data?.address||{};const text=(v:unknown)=>typeof v==='string'?v.trim():'';
- const cities=[a.city,a.town,a.municipality].map(text);const verified=a.country_code==='in'&&cities.some(v=>/^jaipur(?:\s+(?:municipal corporation|greater|heritage|city))?$/i.test(v));
+ const verified=jaipurAddress(a);
  if(!verified)return {...coordinates,warning:'Current location found. The returned address could not be verified as Jaipur. Confirm your Jaipur area and PIN manually.'};
- const candidates=[a.neighbourhood,a.suburb,a.quarter,a.city_district,a.residential,a.borough].map(text).filter(Boolean);const area=candidates.map(candidate=>findJaipurLocality(candidate)?.name).find(Boolean)||candidates[0]||coordinates.area;
+ const candidates=[a.neighbourhood,a.suburb,a.quarter,a.city_district,a.residential,a.borough,a.village,a.town].map(text).filter(Boolean);const area=candidates.map(candidate=>findJaipurLocality(candidate)?.name).find(Boolean)||candidates[0]||coordinates.area;
  const result:JaipurLocation={...coordinates,area,approximateArea:!candidates.some(candidate=>findJaipurLocality(candidate)),pincode:validJaipurPin(text(a.postcode))?text(a.postcode):'',street:[text(a.house_number),text(a.road)].filter(Boolean).join(', ')};
  if(result.approximateArea)result.warning='GPS location found. Check the nearby area and your delivery entrance before saving.';
  if(!area)return {...result,warning:'Current location found. Your locality was not found. Choose a Jaipur area manually.'};
@@ -64,7 +65,7 @@ export async function searchJaipurAddress(street:string,area:string,pin:string):
  if(Array.isArray(data)&&!data.length){const simpler=street.replace(/^(?:house|flat|plot|no\.?|number|#)?\s*[\d/\-]+[,\s]+/i,'').trim();if(simpler&&simpler!==street.trim()){await new Promise(resolve=>setTimeout(resolve,1100));url.searchParams.set('q',`${simpler}, ${area}, Jaipur, Rajasthan, India`);const retry=await fetch(url,{signal:controller.signal,headers:{Accept:'application/json'}});if(retry.ok)data=await retry.json()}}
  const matches:Array<AddressMatch>=(Array.isArray(data)?data:[]).filter(item=>{
  const a=item.address||{},lat=Number(item.lat),lon=Number(item.lon);
- return a.country_code==='in'&&[a.city,a.town,a.municipality].some(v=>typeof v==='string'&&/^jaipur(?:\s+(?:municipal corporation|greater|heritage|city))?$/i.test(v))&&(!a.postcode||a.postcode===pin)&&inJaipurBounds(lat,lon)&&!!(a.road||a.house_number)&&!['administrative','postcode','suburb','city','neighbourhood'].includes(item.type);
+ return jaipurAddress(a)&&(!a.postcode||a.postcode===pin)&&inJaipurBounds(lat,lon)&&!!(a.road||a.house_number)&&!['administrative','postcode','suburb','city','neighbourhood'].includes(item.type);
  }).map(item=>({latitude:Number(item.lat),longitude:Number(item.lon),label:String(item.display_name||street)}));
  if(!matches.length)throw new Error('This street is not mapped yet. Choose your delivery entrance on the map below, or use current location.');
  return matches;
