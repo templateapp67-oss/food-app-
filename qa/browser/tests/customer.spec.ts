@@ -27,7 +27,7 @@ for(const mode of ['login','signup'] as const)test(`${mode} retries a denied gue
   window.fetch=(input,init)=>{const url=String(input);if(!url.startsWith('https://zilwgiuiygqqardzutxi.supabase.co'))return native(input,init);
    const user={id,email:'qa@example.test',aud:'authenticated',role:'authenticated',created_at:new Date().toISOString(),app_metadata:{provider:'email',providers:['email']},user_metadata:{full_name:'QA customer'}};
    const payload=btoa(JSON.stringify({sub:id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600}));
-   let body:unknown=[];if(url.includes('/auth/v1/token')||url.includes('/auth/v1/signup'))body={access_token:`eyJhbGciOiJIUzI1NiJ9.${payload}.test`,refresh_token:'qa-test-refresh',token_type:'bearer',expires_in:3600,user};else if(url.includes('/auth/v1/user'))body=user;else if(url.includes('nexora_food_profiles'))body={id,full_name:'QA customer',email:'qa@example.test',phone:''};else if(url.includes('nexora_food_public_config'))body={'cod.enabled':true};else if(url.includes('/rpc/'))body=id;
+   let body:unknown=[];if(url.includes('/auth/v1/token')||url.includes('/auth/v1/signup'))body={access_token:`eyJhbGciOiJIUzI1NiJ9.${payload}.test`,refresh_token:'qa-test-refresh',token_type:'bearer',expires_in:3600,user};else if(url.includes('/auth/v1/user'))body=user;else if(url.includes('nexora_food_profiles'))body={id,full_name:'QA customer',email:'qa@example.test',phone:''};else if(url.includes('nexora_food_public_config'))body={'cod.enabled':true};else if(url.includes('nexora_food_workspace_context'))body={workspace:'customer',ready:true,application_submitted:false,path:'/'};else if(url.includes('/rpc/'))body=id;
    return Promise.resolve(new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}}));
   };
  });
@@ -61,7 +61,7 @@ test.describe('live profile with isolated backend fixtures',()=>{
    else if(url.includes('nexora_food_save_account')){const args=JSON.parse(String(init?.body));profile.full_name=args.p_name;profile.phone=args.p_phone;if(args.p_avatar)profile.avatar_url=args.p_avatar;localStorage.setItem('qa.saved-profile',JSON.stringify(profile));body=null}
    else if(url.includes('nexora_food_profiles')){body=profile;localStorage.setItem('qa.profile-reads',String(Number(localStorage.getItem('qa.profile-reads')||0)+1))}
    else if(url.includes('nexora_food_public_config'))body={'cod.enabled':true};
-   else if(url.includes('/rpc/'))body=id;
+   else if(url.includes('nexora_food_workspace_context'))body={workspace:'customer',ready:true,application_submitted:false,path:'/'};else if(url.includes('/rpc/'))body=id;
    return new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}});
   };
  });
@@ -120,4 +120,35 @@ test('admin dispatch and rider delivery lifecycle persist through all three work
  await page.getByRole('button',{name:'Earnings',exact:true}).click();await expect(page.getByText('Delivery earnings & tips')).toBeVisible();await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.orders')||'[]')[0].status)).toBe('delivered');
  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('nexora.demo.operations')||'{}').riderLedger.length)).toBe(1);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
+});
+
+
+test.describe('multi-role signup with isolated backend fixtures',()=>{
+ test.use({serviceWorkers:'block'});
+ for(const workspace of ['customer','restaurant','rider','admin'])test(`signup routes ${workspace} into its validated workspace`,async({page})=>{
+  await page.addInitScript(()=>{
+   const native=window.fetch.bind(window),id='00000000-0000-4000-8000-000000000456';
+   window.fetch=async(input,init)=>{
+    const url=String(input);if(!url.startsWith('https://zilwgiuiygqqardzutxi.supabase.co'))return native(input,init);
+    const args=init?.body?JSON.parse(String(init.body)):{};
+    if(url.includes('/auth/v1/signup'))localStorage.setItem('qa.signup-workspace',args.data?.registration_workspace||'customer');
+    const workspace=localStorage.getItem('qa.signup-workspace')||'customer';
+    const user={id,email:'roles@example.test',aud:'authenticated',role:'authenticated',created_at:new Date().toISOString(),app_metadata:{provider:'email',providers:['email']},user_metadata:{full_name:'Role customer',registration_workspace:workspace}};
+    const payload=btoa(JSON.stringify({sub:id,aud:'authenticated',role:'authenticated',exp:Math.floor(Date.now()/1000)+3600}));
+    let body:unknown=[];
+    if(url.includes('/auth/v1/signup')||url.includes('/auth/v1/token'))body={access_token:`eyJhbGciOiJIUzI1NiJ9.${payload}.test`,refresh_token:'roles-test-refresh',token_type:'bearer',expires_in:3600,user};
+    else if(url.includes('/auth/v1/user'))body=user;
+    else if(url.includes('nexora_food_profiles'))body={id,full_name:'Role customer',email:user.email,phone:''};
+    else if(url.includes('nexora_food_user_roles'))body=[{role:'customer'}];
+    else if(url.includes('nexora_food_public_config'))body={'cod.enabled':true};
+    else if(url.includes('nexora_food_workspace_context'))body={workspace,ready:workspace==='customer',application_submitted:false,path:workspace==='customer'?'/':`/${workspace}`};
+    else if(url.includes('/rpc/'))body=null;
+    return new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}});
+   };
+  });
+  await page.goto('/');await page.getByRole('button',{name:'Sign in / Sign up',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Good food starts with hello.'});await dialog.getByRole('button',{name:'Create account',exact:true}).click();await dialog.getByLabel('Register as').selectOption(workspace);await dialog.getByLabel('Full name').fill('Role customer');await dialog.getByLabel('Email',{exact:true}).fill('roles@example.test');await dialog.getByLabel('Password',{exact:true}).fill('roles-password-123');await dialog.locator('form').getByRole('button',{name:'Create account',exact:true}).click();await expect(dialog).toHaveCount(0);
+  await expect(page).toHaveURL(workspace==='customer'?/#\/$/:new RegExp('#/'+workspace+'$'));
+  if(workspace!=='customer')await expect(page.getByRole('heading',{name:workspace==='restaurant'?'Welcome to your restaurant workspace':workspace==='rider'?'Welcome to your rider workspace':'Your admin access request is saved'})).toBeVisible();
+  await expect(page.getByText('This workspace needs assigned access')).toHaveCount(0);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
+ });
 });
