@@ -1,0 +1,7 @@
+import {render,screen,fireEvent,cleanup} from '@testing-library/react';
+import {afterEach,it,expect} from 'vitest';
+import JaipurNeighbourhoods from './JaipurNeighbourhoods';
+import type {Restaurant} from '../model';
+afterEach(cleanup);
+it('shows ten places initially and searches the entire catalog including aliases',()=>{render(<JaipurNeighbourhoods restaurants={[]} selected="" onSelect={()=>{}}/>);expect(screen.getAllByRole('button')).toHaveLength(10);fireEvent.change(screen.getByLabelText('Search Jaipur neighbourhoods'),{target:{value:'Chomu'}});expect(screen.getByRole('button',{name:/Food in Chomu/})).toBeTruthy();fireEvent.change(screen.getByLabelText('Search Jaipur neighbourhoods'),{target:{value:'C-Scheme'}});expect(screen.getByRole('button',{name:/Food in C Scheme/})).toBeTruthy()});
+it('replaces sample data with approved real restaurant data in the same area',()=>{const real={id:'live',city:'Jaipur',status:'active',address:'24, C Scheme, Jaipur'}as Restaurant;const{rerender}=render(<JaipurNeighbourhoods restaurants={[]} selected="" onSelect={()=>{}}/>);expect(screen.getByRole('button',{name:/Food in C Scheme/}).textContent).toContain('Sample preview');rerender(<JaipurNeighbourhoods restaurants={[real]} selected="" onSelect={()=>{}}/>);expect(screen.getByRole('button',{name:/Food in C Scheme/}).textContent).toContain('1 live restaurant');expect(screen.getByRole('button',{name:/Food in C Scheme/}).textContent).not.toContain('Sample preview')});
