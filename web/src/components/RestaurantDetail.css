@@ -35,3 +35,5 @@
 .rd-menu-pages{display:flex;gap:12px;overflow-x:auto;padding-bottom:16px}.rd-menu-pages a{width:130px;flex-shrink:0;color:var(--muted);font-size:11px;text-decoration:none}.rd-menu-pages img{width:130px;height:180px;object-fit:cover;border-radius:10px}.rd-menu-pages span{display:block;margin-top:6px}
 
 .rd-mock-note{font-size:11px!important;color:var(--muted);margin:0 0 18px}.rd-brands button small{display:block;font-size:9px;color:var(--muted);margin-top:5px}.rd-mock-dialog>img{height:35dvh;object-fit:cover;border-radius:12px}.rd-mock-dialog h2{margin-top:18px}.rd-mock-dialog p{font-size:13px}
+
+.rd-menu-search{margin-bottom:14px}.rd-menu-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}.rd-menu-filters button[aria-pressed="true"]{border-color:var(--orange,#f97316);background:#fff1e7;color:#9c3e00}.restaurant-detail details{padding:16px;border:1px solid var(--border);border-radius:12px;margin:12px 0}.restaurant-detail summary{cursor:pointer;font-weight:600}.restaurant-detail details p{line-height:1.6}

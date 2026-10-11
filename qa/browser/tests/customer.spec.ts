@@ -81,3 +81,19 @@ test('install fallback matches the device and closes cleanly',async({page},info)
  else await expect(help).toContainText('Install in your browser');
  await page.getByRole('button',{name:'Close install instructions'}).click();await expect(help).toHaveCount(0);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
 });
+
+
+test('restaurant cards open dedicated links and menu search survives route navigation',async({page},info)=>{
+ await activate(page.getByRole('button',{name:'View Dough & Co.'}),!!info.project.use.hasTouch);
+ await expect(page).toHaveURL(/#\/restaurant\/demo-r2$/);
+ await expect(page.getByRole('heading',{level:1,name:'Dough & Co.'})).toBeVisible();
+ await page.getByRole('button',{name:'Menu',exact:true}).click();
+ await page.getByLabel('Search this restaurant menu').fill('Farmhouse');
+ await expect(page.getByRole('img',{name:'Farmhouse Pizza',exact:true})).toBeVisible();
+ await expect(page.getByRole('img',{name:'Margherita Pizza',exact:true})).toHaveCount(0);
+ await page.reload();await expect(page.getByRole('heading',{level:1,name:'Dough & Co.'})).toBeVisible();
+ await page.getByRole('button',{name:'Back to discovery'}).click();
+ await expect(page.getByRole('button',{name:'View Dough & Co.'})).toBeVisible();
+ await page.goBack();await expect(page.getByRole('heading',{level:1,name:'Dough & Co.'})).toBeVisible();
+ await page.goForward();await expect(page.getByRole('button',{name:'View Dough & Co.'})).toBeVisible();
+});
