@@ -1,0 +1,3 @@
+import {useEffect,useState} from 'react';
+import type {Profile} from '../model';
+export default function ProfileAvatar({profile,compact=false}:{profile:Profile|null;compact?:boolean}){const[failed,setFailed]=useState(false);const raw=profile?.avatar_display_url||profile?.avatar_url;const src=raw&&/^(https:\/\/|data:image\/)/.test(raw)?raw:undefined;useEffect(()=>setFailed(false),[src]);return <span className={'profile-avatar-image '+(compact?'compact':'')}>{src&&!failed?<img src={src} alt="Your profile" onError={()=>setFailed(true)}/>:<span aria-label={profile?.full_name||'Guest'}>{profile?.full_name?.trim().slice(0,1).toUpperCase()||'N'}</span>}</span>}

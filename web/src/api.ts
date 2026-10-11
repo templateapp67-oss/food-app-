@@ -6,10 +6,10 @@ const url=env.VITE_SUPABASE_URL||foodBackend.url;
 const publicKey=env.VITE_SUPABASE_PUBLISHABLE_KEY||foodBackend.publishableKey;
 export const configured=env.MODE!=='test'&&!!url&&!!publicKey;
 export const supabase=configured?createClient(url,publicKey,{auth:{storageKey:'nexora.food.auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
-export const demoAllowed=env.VITE_DEMO_ENABLED!=='false';
+export const demoAllowed=env.MODE==='test'||env.VITE_DEMO_ENABLED==='true'||(env.VITE_DEMO_ENABLED!=='false'&&new URLSearchParams(location.search).get('preview')==='demo');
 export async function rpc<T>(name:string,args:Record<string,unknown>={}):Promise<T>{if(!supabase)throw new Error('Live backend is not configured.');const {data,error}=await supabase.rpc(name.replace(/^nexora_/,'nexora_food_'),args);if(error)throw new Error(error.message);return data as T}
 export async function quoteCart(restaurant:string,lines:CartLine[],address:Address,coupon:string,points:number){return rpc<Quote>('nexora_quote_cart',{p_restaurant:restaurant,p_lines:lines,p_address:address.id,p_coupon:coupon||null,p_points:points})}
-export async function placeOrder(restaurant:string,lines:CartLine[],address:Address,coupon:string,points:number,key:string,method:string,quote:string){const payload={p_restaurant:restaurant,p_lines:lines,p_address:address.id,p_coupon:coupon||null,p_points:points,p_key:key,p_method:method,p_quote:quote};if(method==='online'){const{data,error}=await supabase!.functions.invoke('nexora-food-place-order',{body:payload});if(error||data?.error)throw new Error(data?.error||error?.message||'Could not create payment order');return data as GatewayOrder}return rpc<GatewayOrder>('nexora_place_order',payload)}
+export async function placeOrder(restaurant:string,lines:CartLine[],address:Address,coupon:string,points:number,key:string,method:string,quote:string){const payload={p_restaurant:restaurant,p_lines:lines,p_address:address.id,p_coupon:coupon||null,p_points:points,p_key:key,p_method:method,p_quote:quote};if(method!=='cod')throw new Error('Only Cash on Delivery is available right now.');return rpc<GatewayOrder>('nexora_place_order',payload)}
 export type GatewayOrder={id:string;order_number:string;gateway_order_id?:string;key_id?:string;amount?:number};
 type RazorpayOptions={key:string;order_id:string;amount:number;currency:string;name:string;handler:(result:unknown)=>void;modal:{ondismiss:()=>void}};
 type RazorpayInstance={open:()=>void;on:(event:string,handler:()=>void)=>void};

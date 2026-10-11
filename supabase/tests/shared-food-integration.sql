@@ -73,3 +73,11 @@ end$$;
 reset role;
 rollback;
 select 'passed: account isolation, escalation denial, Jaipur restriction, restaurant ownership, server pricing, COD idempotency, assigned rider delivery, review aggregation, rewards, notifications; fixtures rolled back' as food_integration;
+-- Online checkout cannot be re-enabled during the COD-only launch.
+do $$ begin
+ begin
+  update public.nexora_food_app_settings set value='true'::jsonb where key='payments.online_enabled';
+  raise exception 'Expected COD-only constraint';
+ exception when check_violation then null;
+ end;
+end $$;
