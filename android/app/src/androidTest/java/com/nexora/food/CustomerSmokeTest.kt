@@ -9,6 +9,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertNotNull
 import org.junit.runner.RunWith
 import java.io.File
 @RunWith(AndroidJUnit4::class)
@@ -16,6 +17,12 @@ class CustomerSmokeTest {
  private lateinit var device:UiDevice
  @Before fun launch(){val instrumentation=InstrumentationRegistry.getInstrumentation();device=UiDevice.getInstance(instrumentation);val context=instrumentation.targetContext;context.startActivity(Intent(context,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK));assertTrue("App did not launch",device.wait(Until.hasObject(By.text("Home")),15000))}
  @After fun evidence(){val context=InstrumentationRegistry.getInstrumentation().targetContext;device.takeScreenshot(File(context.getExternalFilesDir(null),"customer-smoke.png"));device.setOrientationNatural()}
- @Test fun customerTabsAndEmailLoginAreReachable(){device.findObject(By.text("Profile")).click();assertTrue(device.wait(Until.hasObject(By.text("Sign in")),5000));device.findObject(By.text("Sign in")).click();assertTrue(device.wait(Until.hasObject(By.text("Sign in to Nexora Food")),5000));assertTrue(device.hasObject(By.text("Email")));assertTrue(device.hasObject(By.text("Password")));device.findObject(By.text("Create account")).click();assertTrue(device.wait(Until.hasObject(By.text("Create your Food account")),5000));assertTrue(device.hasObject(By.text("Full name")))}
- @Test fun rotationKeepsNavigationReachable(){device.setOrientationLeft();assertTrue(device.wait(Until.hasObject(By.text("Orders")),5000));device.findObject(By.text("Orders")).click();assertTrue(device.wait(Until.hasObject(By.text("Your orders")),5000));device.setOrientationNatural();device.findObject(By.text("Rewards")).click();assertTrue(device.wait(Until.hasObject(By.text("Nexora Rewards")),5000))}
+ private fun tap(label:String) {
+  device.waitForIdle()
+  val target=device.wait(Until.findObject(By.text(label)),10000)
+  assertNotNull("Button not available: $label",target)
+  target.click()
+ }
+ @Test fun customerTabsAndEmailLoginAreReachable(){tap("Profile");assertTrue(device.wait(Until.hasObject(By.text("Sign in")),5000));tap("Sign in");assertTrue(device.wait(Until.hasObject(By.text("Sign in to Nexora Food")),5000));assertTrue(device.hasObject(By.text("Email")));assertTrue(device.hasObject(By.text("Password")));tap("Create account");assertTrue(device.wait(Until.hasObject(By.text("Create your Food account")),5000));assertTrue(device.hasObject(By.text("Full name")))}
+ @Test fun rotationKeepsNavigationReachable(){device.setOrientationLeft();device.waitForIdle();assertTrue(device.wait(Until.hasObject(By.text("Orders")),5000));tap("Orders");assertTrue(device.wait(Until.hasObject(By.text("Your orders")),5000));device.setOrientationNatural();device.waitForIdle();tap("Rewards");assertTrue(device.wait(Until.hasObject(By.text("Nexora Rewards")),5000))}
 }
