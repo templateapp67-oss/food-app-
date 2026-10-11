@@ -73,3 +73,11 @@ test.describe('live profile with isolated backend fixtures',()=>{
 });
 
 });
+
+test('install fallback matches the device and closes cleanly',async({page},info)=>{
+ await page.getByRole('button',{name:'Install app',exact:true}).click();const help=page.getByRole('region',{name:'App installation steps'});await expect(help).toBeVisible();
+ if(info.project.name==='iPhone mobile web'){await expect(help).toContainText('Install on iPhone / iPad');await expect(help).toContainText('Share button');await expect(page.getByRole('link',{name:/Download Android APK/})).toHaveCount(0)}
+ else if(info.project.name==='Android mobile web'){await expect(help).toContainText('Install on Android');await expect(help).toContainText('three-dot menu');await expect(help).not.toContainText('Safari')}
+ else await expect(help).toContainText('Install in your browser');
+ await page.getByRole('button',{name:'Close install instructions'}).click();await expect(help).toHaveCount(0);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
+});

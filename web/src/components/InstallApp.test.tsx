@@ -1,0 +1,10 @@
+import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
+import {beforeEach,afterEach,it,expect,vi} from 'vitest';
+import InstallApp,{type InstallEvent} from './InstallApp';
+beforeEach(()=>{window.nexoraInstallPrompt=null;vi.stubGlobal('matchMedia',vi.fn(()=>({matches:false,addEventListener:vi.fn(),removeEventListener:vi.fn()})))});
+afterEach(()=>{cleanup();vi.unstubAllGlobals();vi.restoreAllMocks()});
+function deferred(outcome:'accepted'|'dismissed'='accepted'){return Object.assign(new Event('beforeinstallprompt'),{prompt:vi.fn().mockResolvedValue(undefined),userChoice:Promise.resolve({outcome})})as InstallEvent}
+it('uses a prompt captured before React mounted',async()=>{const e=deferred();window.nexoraInstallPrompt=e;render(<InstallApp/>);fireEvent.click(screen.getByText('Install app'));await waitFor(()=>expect(screen.queryByLabelText('Get the Nexora Food app')).toBeNull());expect(e.prompt).toHaveBeenCalledOnce();expect(window.nexoraInstallPrompt).toBeNull()});
+it('does not reuse a dismissed one-use prompt',async()=>{render(<InstallApp/>);const e=deferred('dismissed');fireEvent(window,e);fireEvent.click(screen.getByText('Install app'));await screen.findByLabelText('App installation steps');fireEvent.click(screen.getByText('Install app'));expect(e.prompt).toHaveBeenCalledOnce();expect(window.nexoraInstallPrompt).toBeNull()});
+it('shows Safari instructions without an Android download on iOS',()=>{vi.spyOn(navigator,'userAgent','get').mockReturnValue('iPhone Safari');render(<InstallApp/>);fireEvent.click(screen.getByText('Install app'));expect(screen.getByText('Install on iPhone / iPad')).toBeTruthy();expect(screen.getByText(/Tap the Share button/)).toBeTruthy();expect(screen.queryByText(/Download Android APK/)).toBeNull()});
+it('hides the banner in standalone mode',()=>{vi.stubGlobal('matchMedia',()=>({matches:true,addEventListener:vi.fn(),removeEventListener:vi.fn()}));render(<InstallApp/>);expect(screen.queryByLabelText('Get the Nexora Food app')).toBeNull()});
