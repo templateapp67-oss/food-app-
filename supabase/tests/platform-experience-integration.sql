@@ -20,4 +20,9 @@ do $$begin
  if public.nexora_food_public_config()->>'experience.customer_mode'<>'live'then raise exception 'Live mode did not persist';end if;
  if not exists(select 1 from public.nexora_food_admin_audit_logs where action='set-customer-experience'and actor_id=auth.uid())then raise exception 'Mode decision audit missing';end if;
 end$$;
+select set_config('request.jwt.claim.sub',(select admin::text from mode_fixture),true);
+-- Original-listing reasons cannot accidentally hide live restaurants by saving Demo.
+do $$begin
+ begin perform public.nexora_food_set_experience_mode('demo','Show original approved restaurants');raise exception 'Conflicting Original reason saved Demo';exception when others then if sqlerrm not like 'Choose Live mode to show original approved restaurants.%' then raise;end if;end;
+end$$;
 rollback;
