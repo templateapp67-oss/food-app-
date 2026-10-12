@@ -37,3 +37,11 @@ test.describe('Mocked identity flow',()=>{
 });
 
 });
+
+test('public privacy page reloads from the offline shell',async({page,context})=>{
+ await page.goto('/#/terms');await expect(page.getByRole('heading',{name:'Terms of use',exact:true})).toBeVisible();
+ await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise<void>(resolve=>navigator.serviceWorker.addEventListener('controllerchange',()=>resolve(),{once:true}));});
+ await context.setOffline(true);await page.goto('/#/privacy');await page.reload();
+ await expect(page.getByRole('heading',{name:'Privacy policy',exact:true})).toBeVisible();await expect(page.getByText('Draft — requires owner/legal review',{exact:true})).toBeVisible();
+ await context.setOffline(false);
+});
