@@ -25,3 +25,5 @@ describe('Progressive replacement of mock recommendation slots',()=>{
   expect(excluded.casual.every(isMockRestaurant)).toBe(true);
  });
 });
+
+it('never fills live recommendation gaps with sample records',()=>{const result=buildRecommendations(current,[real(0)],false);expect(Object.values(result).flat().every(r=>!isMockRestaurant(r))).toBe(true);expect(buildRecommendations(current,[],false).brands).toHaveLength(0);});

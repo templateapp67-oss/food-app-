@@ -45,8 +45,9 @@ export function mergeRecommendationSlots(real:Restaurant[],mocks:Restaurant[],li
   return result;
 }
 
-export function buildRecommendations(current:Restaurant,records:Restaurant[]) {
+export function buildRecommendations(current:Restaurant,records:Restaurant[],allowMocks=true) {
   const real=records.filter(r=>!isMockRestaurant(r)&&r.id!==current.id&&r.status==='active'&&!r.is_temporarily_closed&&isJaipur(r.city));
+  if(!allowMocks){const northOnly=real.filter(r=>r.cuisines?.some(c=>/north\s*indian/i.test(c)));return {casual:real.filter(r=>!r.dining_type||r.dining_type==='casual_dining').slice(0,3),near:real.filter(r=>area(r)===area(current)).slice(0,3),north:northOnly.slice(0,3),brands:real.slice(0,12)};}
   const north=(r:Restaurant)=>r.cuisines?.some(c=>/north\s*indian/i.test(c));
   const locality=area(current);
   const near=real.filter(r=>locality&&area(r)===locality);

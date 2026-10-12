@@ -27,7 +27,7 @@ function DetailPhoto({src,alt}:{src?:string;alt:string}) {
 /** Optional fields come from restaurant records. Demo dining deals cannot be redeemed. */
 export default function RestaurantDetail({restaurant:r,items,related,children,onBack,onOpen,onLogin,signedIn,demo,onFavorite,isFavorite,preview=false}:Props) {
   const [tab,setTab]=useState('Dineout');
-  const suggestions=buildRecommendations(r,related);
+  const suggestions=buildRecommendations(r,related,demo||preview);
   function openSuggestion(x:Restaurant){onOpen(x.id);}
   const [offerTab,setOfferTab]=useState<'prebooking'|'walkin'>('prebooking');
   const [dealIndex,setDealIndex]=useState(0);

@@ -152,3 +152,19 @@ test.describe('multi-role signup with isolated backend fixtures',()=>{
   await expect(page.getByText('This workspace needs assigned access')).toHaveCount(0);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
  });
 });
+
+test('live approved restaurants appear immediately in locality and name search without demo fallback',async({page})=>{
+ await page.addInitScript(()=>{
+  const native=window.fetch.bind(window);localStorage.setItem('qa.live-listing-status','pending');
+  window.fetch=async(input,init)=>{
+   const url=String(input);if(!url.startsWith('https://zilwgiuiygqqardzutxi.supabase.co'))return native(input,init);
+   let body:unknown=[];
+   if(url.includes('nexora_food_public_config'))body={'cod.enabled':true};
+   else if(url.includes('/rest/v1/nexora_food_restaurants')&&localStorage.getItem('qa.live-listing-status')==='active')body=[{id:'real-cafe',name:'Rambharose Cafe',city:'Jaipur',address:'Jhotwara, Jaipur',status:'active',description:'Live Jaipur restaurant',is_demo:false,is_temporarily_closed:false,prep_time_min:20,rating_avg:0,rating_count:0,avg_cost_for_two_paise:30000,min_order_paise:0,is_veg_only:true,cuisines:['North Indian']}];
+   return new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+ });
+ await page.goto('/');await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toHaveCount(0);await expect(page.getByRole('button',{name:'View Dough & Co.'})).toHaveCount(0);await expect(page.getByText('Sample preview',{exact:true})).toHaveCount(0);
+ await page.evaluate(()=>{localStorage.setItem('qa.live-listing-status','active');window.dispatchEvent(new Event('focus'))});
+ await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toBeVisible();await page.getByLabel('Global restaurant and food search').fill('jHoTwArA');await page.getByRole('button',{name:'Search food',exact:true}).click();await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toBeVisible();await page.getByLabel('Global restaurant and food search').fill('rambharose cafe');await page.getByRole('button',{name:'Search food',exact:true}).click();await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toBeVisible();await expect(page.getByText('SAMPLE PREVIEW',{exact:true})).toHaveCount(0);
+});
