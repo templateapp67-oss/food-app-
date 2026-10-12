@@ -13,3 +13,5 @@ android/.gradle/
 qa/browser/playwright-report/
 qa/browser/test-results/
 android/device-evidence/
+
+**/google-services.json

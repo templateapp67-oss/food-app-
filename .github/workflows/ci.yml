@@ -8,6 +8,9 @@ jobs:
    - uses: actions/checkout@v4
    - uses: actions/setup-node@v4
      with: {node-version: '24', cache: npm}
+   - uses: denoland/setup-deno@v2
+     with: {deno-version: v2.x}
+   - run: deno check supabase/functions/send-notification/index.ts supabase/functions/process-deletion/index.ts supabase/functions/public-deletion/index.ts
    - run: npm ci
    - run: npm test
    - run: npm run build
@@ -33,13 +36,21 @@ jobs:
    - uses: supabase/setup-cli@v1
      with: {version: 2.83.0}
    - run: supabase start
-   - run: supabase db reset
+   - name: Test Food namespace only on isolated stack
+     run: |
+      mkdir -p /tmp/nexora-other-module-migrations
+      for file in supabase/migrations/*.sql; do
+       case "$file" in *_food_*.sql) ;; *) mv "$file" /tmp/nexora-other-module-migrations/ ;; esac
+      done
+      supabase db reset
    - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/shared-food-integration.sql
    - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/operations-integration.sql
    - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/multi-role-integration.sql
    - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/restaurant-approvals-integration.sql
    - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/platform-experience-integration.sql
    - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/manual-address-integration.sql
+
+   - run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/critical-gaps-integration.sql
 
  browser:
   runs-on: ubuntu-latest
