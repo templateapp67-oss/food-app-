@@ -1,0 +1,8 @@
+{
+  "name": "Nexora Food",
+  "description": "Discover great food with Nexora Food. Customer ordering, restaurant management and platform administration in Jaipur.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
