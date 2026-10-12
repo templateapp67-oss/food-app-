@@ -1,7 +1,8 @@
-import {afterEach,it,expect,vi} from 'vitest';
+import {beforeEach,afterEach,it,expect,vi} from 'vitest';
 import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
 import {DeliveryAddressForm} from './DeliveryAddressForm';
-vi.mock('./geolocation',()=>({locateJaipur:async(fill:(value:unknown)=>void)=>{const value={latitude:26.9124,longitude:75.7873,accuracy:0,area:'',pincode:'',street:'',warning:'Current location found. Address lookup is unavailable.'};fill(value);return value},searchJaipurAddress:vi.fn()}));
+const {locate,search}=vi.hoisted(()=>({locate:vi.fn(),search:vi.fn()}));vi.mock('./geolocation',()=>({locateJaipur:locate,searchJaipurAddress:search}));
+beforeEach(()=>{vi.resetAllMocks();locate.mockImplementation(async(fill:(value:unknown)=>void)=>{const value={latitude:26.9124,longitude:75.7873,accuracy:0,area:'',pincode:'',street:'',warning:'Current location found. Address lookup is unavailable.'};fill(value);return value})});
 afterEach(cleanup);
 it('keeps a GPS fix with zero reported accuracy when customers complete an unavailable address lookup',async()=>{
  const save=vi.fn().mockResolvedValue(undefined);render(<DeliveryAddressForm busy={false} onSave={save}/>);
@@ -26,4 +27,12 @@ it('drops old GPS coordinates when a customer chooses a different delivery area'
  fireEvent.click(screen.getByRole('button',{name:'Change area manually'}));fireEvent.change(screen.getByLabelText('Jaipur area / locality'),{target:{value:'Jhotwara'}});
  expect((document.querySelector('input[name=latitude]')as HTMLInputElement).value).toBe('');
  expect(screen.getByRole('button',{name:'Save address'})).toBeDefined();
+});
+
+it('saves a complete manual address after GPS denial without requiring geocoding',async()=>{
+ locate.mockRejectedValue(new Error('Location permission denied'));search.mockRejectedValue(new Error('Address lookup offline'));const save=vi.fn().mockResolvedValue(undefined);render(<DeliveryAddressForm busy={false} onSave={save}/>);
+ fireEvent.change(screen.getByLabelText('House / flat and street'),{target:{value:'118 Durga Vihar D'}});fireEvent.change(screen.getByLabelText('Jaipur area / locality'),{target:{value:'Jhotwara'}});fireEvent.change(screen.getByLabelText('PIN code'),{target:{value:'302012'}});
+ fireEvent.click(screen.getByRole('button',{name:'Use current location'}));await screen.findByRole('alert');
+ expect((screen.getByLabelText('Jaipur area / locality')as HTMLSelectElement).value).toBe('Jhotwara');expect((screen.getByLabelText('PIN code')as HTMLInputElement).value).toBe('302012');
+ fireEvent.click(screen.getByRole('button',{name:'Save address'}));await waitFor(()=>expect(save).toHaveBeenCalledWith(expect.objectContaining({line1:'118 Durga Vihar D',locality:'Jhotwara',pincode:'302012',latitude:null,longitude:null})));expect(search).not.toHaveBeenCalled();
 });
