@@ -46,3 +46,8 @@ select option{background:var(--surface);color:var(--text)}.rd-review-list{displa
 .neighbourhood-search{max-width:540px;margin:18px 0 10px}.locality-grid button strong,.locality-grid button small{display:block}.locality-grid button small{margin-top:7px;font-size:11px;color:var(--muted)}.locality-grid button .locality-preview{color:var(--accent);font-size:10px}.locality-grid button svg{flex-shrink:0}
 
 .popular-food-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin:24px 0}.popular-food-grid button,.popular-food-grid article{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;min-width:0}.popular-food-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px}.popular-food-grid strong,.popular-food-grid small{display:block;margin-top:8px;overflow-wrap:anywhere}.popular-food-grid small{font-size:11px;color:var(--muted)}.mock-restaurant-discovery{margin:20px 0}.mock-restaurant-discovery .notice{margin-bottom:18px}@media(max-width:900px){.popular-food-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:600px){.popular-food-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.popular-food-grid strong{font-size:12px}}
+
+/* Twelve featured neighbourhoods: 2 mobile, 3 tablet, 4 desktop columns. */
+.jaipur-areas .locality-grid>button{min-height:100px;height:100%}
+@media(min-width:761px) and (max-width:1023px){.jaipur-areas .locality-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.jaipur-areas .locality-grid>button{min-height:90px}}
