@@ -51,7 +51,8 @@ do $$begin
  perform public.nexora_food_prepare_deletion((select request_id from food_gap_fixture));
  if not exists(select 1 from public.nexora_food_deletion_requests where id=(select request_id from food_gap_fixture)and status='blocked_active_orders')then raise exception 'Active order did not block';end if;
 end$$;
-update public.nexora_food_orders set status='cancelled'where id=(select order_id from food_gap_fixture);
+update public.nexora_food_orders set status='cancelled',cancel_reason='Private personal details',cancelled_by=(select other_user from food_gap_fixture)where id=(select order_id from food_gap_fixture);
+insert into public.nexora_food_admin_audit_logs(actor_id,action,entity,entity_id,reason) select other_user,'fixture','orders',order_id::text,'Private personal details'from food_gap_fixture;
 -- Public verification requires an unexpired one-use secret and is service-only.
 do $$declare challenge jsonb;tokenhash text:=encode(extensions.digest(gen_random_uuid()::text,'sha256'),'hex');email text;begin
  email:='food-critical-qa-'||(select customer::text from food_gap_fixture)||'@example.invalid';
@@ -71,8 +72,10 @@ do $$declare u uuid;r uuid;work jsonb;begin
  raise notice 'Shared stack: verified cross-product protection; full anonymization executes on isolated CI stack.';
  else
  if not(work->>'ready')::boolean then raise exception 'Eligible worker did not claim';end if;
- if not exists(select 1 from public.nexora_food_orders where id=(select order_id from food_gap_fixture)and user_id is null and anonymized_account=r and address_snapshot='{"locality":"Jhotwara","city":"Jaipur"}'::jsonb)then raise exception 'Financial anonymization failed';end if;
+ if not exists(select 1 from public.nexora_food_orders where id=(select order_id from food_gap_fixture)and user_id is null and anonymized_account=r and cancel_reason is null and address_snapshot='{"locality":"Jhotwara","city":"Jaipur"}'::jsonb)then raise exception 'Financial anonymization failed';end if;
  if not exists(select 1 from public.nexora_food_restaurant_earnings where order_id=(select order_id from food_gap_fixture))then raise exception 'Financial ledger removed';end if;
+ if exists(select 1 from public.nexora_food_admin_audit_logs where entity_id=(select order_id::text from food_gap_fixture)and reason='Private personal details')then raise exception 'Personal audit text retained';end if;
+ if exists(select 1 from nexora_food_private.deletion_challenges where email_hash=encode(extensions.digest('food-critical-qa-'||u::text||'@example.invalid','sha256'),'hex'))then raise exception 'Verification identity hash retained';end if;
  if exists(select 1 from public.nexora_food_device_tokens where user_id=u)then raise exception 'Token retained';end if;
  if (public.nexora_food_prepare_deletion(r)->>'ready')::boolean then raise exception 'Concurrent cleanup claimed';end if;
  perform public.nexora_food_finish_deletion(r,'storage_done');
