@@ -21,3 +21,11 @@ it('uses an explicitly marked Jaipur hub if permission is denied without inventi
  position.mockImplementation((_,reject)=>reject({code:1}));const{result}=renderHook(()=>useJaipurLocation(true,'new-user'));
  await waitFor(()=>expect(result.current.busy).toBe(false));expect(result.current.value).toMatchObject({area:'Jaipur',source:'fallback',pincode:'',street:''});expect(result.current.error).toContain('permission denied');expect(localStorage.getItem('nexora.food.location')).toBeNull();
 });
+
+it('keeps a manually selected address safe from a late GPS result',async()=>{
+ let resolvePosition:(value:unknown)=>void=()=>{};position.mockImplementation(success=>{resolvePosition=success});
+ const {result}=renderHook(()=>useJaipurLocation(true,'customer'));await waitFor(()=>expect(result.current.busy).toBe(true));
+ const {act}=await import('@testing-library/react');act(()=>result.current.clear());
+ await act(async()=>{resolvePosition({coords:{latitude:26.9124,longitude:75.7873,accuracy:8}});await Promise.resolve()});
+ expect(result.current.value).toBeNull();expect(result.current.busy).toBe(false);expect(localStorage.getItem('nexora.food.location')).toBeNull();
+});

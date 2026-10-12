@@ -5,6 +5,12 @@ import * as seed from './demo';
 beforeEach(()=>{localStorage.clear();localStorage.setItem('nexora.demo','true');sessionStorage.clear();location.hash='';window.scrollTo=vi.fn();window.HTMLElement.prototype.scrollIntoView=vi.fn();vi.spyOn(window,'confirm').mockReturnValue(true);vi.spyOn(window,'prompt').mockReturnValue('Changed my plans')});
 afterEach(()=>{cleanup();vi.restoreAllMocks()});
 describe('Nexora Food demo customer and workspace flows',()=>{
+ it('shows a selected saved delivery area in both header and hero after reload',async()=>{
+ localStorage.setItem('nexora.delivery.address.guest',seed.initialAddress.id);render(<App/>);
+ await waitFor(()=>expect(screen.getByRole('button',{name:'Delivery location'}).textContent).toContain(seed.initialAddress.locality));
+ expect(screen.getByRole('button',{name:new RegExp('^'+seed.initialAddress.locality+', Jaipur$') })).toBeDefined();
+ });
+
 
  it('opens live admin restaurants without forcing demo mode back on reload',async()=>{
   history.replaceState(null,'','/?preview=demo#/admin');render(<App/>);fireEvent.click(screen.getByRole('button',{name:'Restaurants'}));await screen.findByLabelText('Demo restaurant management');fireEvent.click(screen.getByRole('button',{name:'Open live restaurants'}));expect(new URL(location.href).searchParams.has('preview')).toBe(false);await waitFor(()=>expect(localStorage.getItem('nexora.demo')).toBe('false'));expect(location.hash).toBe('#/admin');cleanup();render(<App/>);expect(screen.queryByLabelText('Demo restaurant management')).toBeNull();history.replaceState(null,'','/');

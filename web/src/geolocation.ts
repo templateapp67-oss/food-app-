@@ -11,9 +11,9 @@ export async function locateJaipur(onPosition?:(value:JaipurLocation)=>void):Pro
  let pos:GeolocationPosition;try{pos=await position(true)}catch(first){if((first as GeolocationPositionError).code===1)throw new Error('Location permission denied. Allow Location in your browser site settings, then retry, or enter your Jaipur address manually.');try{pos=await position(false)}catch(e){if((e as GeolocationPositionError).code===1)throw new Error('Location permission denied. Allow Location in browser settings or enter your address manually.');throw new Error('Could not get your location. Turn on device Location / GPS and retry, or enter your street address below.')}}
  const{latitude,longitude,accuracy}=pos.coords;
  if(!inJaipurBounds(latitude,longitude))throw new Error('Your GPS location is outside Jaipur. Nexora Food currently serves Jaipur only.');
- const coordinates:JaipurLocation={latitude,longitude,accuracy,area:'',pincode:'',street:'',source:'gps'};onPosition?.(coordinates);
+ const coordinates:JaipurLocation={latitude,longitude,accuracy,area:'',pincode:'',street:'',source:'gps'};
  const old=cached();if(old&&Math.abs(old.latitude-latitude)<.0005&&Math.abs(old.longitude-longitude)<.0005)return {...old,latitude,longitude,accuracy};
- const nearby=nearestJaipurLocality(latitude,longitude);if(nearby&&nearby.distance<=4){coordinates.area=nearby.place.name;coordinates.approximateArea=true;}
+ const nearby=nearestJaipurLocality(latitude,longitude);if(nearby&&nearby.distance<=4){coordinates.area=nearby.place.name;coordinates.approximateArea=true;}onPosition?.({...coordinates});
  const endpoint=import.meta.env.VITE_GEOCODING_URL||'https://nominatim.openstreetmap.org/reverse';
  let data;try{const url=new URL(endpoint);url.search=new URLSearchParams({format:'jsonv2',lat:String(latitude),lon:String(longitude),zoom:'18',addressdetails:'1','accept-language':'en'}).toString();const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch(url,{signal:controller.signal,headers:{Accept:'application/json'}});if(!response.ok)throw new Error();data=await response.json()}finally{clearTimeout(timer)}}catch{return {...coordinates,warning:'Current location found. Address lookup is unavailable. Check the nearby Jaipur area and enter your PIN code.'}}
  const a=data?.address||{};const text=(v:unknown)=>typeof v==='string'?v.trim():'';
@@ -29,25 +29,28 @@ export async function locateJaipur(onPosition?:(value:JaipurLocation)=>void):Pro
 export const defaultJaipurHub:JaipurLocation={latitude:26.9124,longitude:75.7873,area:'Jaipur',pincode:'',street:'',accuracy:0,source:'fallback'};
 export function useJaipurLocation(auto:boolean,identity:string|null=null){
  const[value,setValue]=useState<JaipurLocation|null>(cached),[error,setError]=useState(''),[busy,setBusy]=useState(false),[status,setStatus]=useState('');
- const inFlight=useRef<Promise<JaipurLocation|null>|null>(null),lastIdentity=useRef<string|null>(null);
+ const inFlight=useRef<Promise<JaipurLocation|null>|null>(null),lastIdentity=useRef<string|null>(null),generation=useRef(0);
  const detect=useCallback((onPosition?:(value:JaipurLocation)=>void)=>{
   if(inFlight.current)return inFlight.current;
+  const requestId=++generation.current;
   setBusy(true);setError('');setStatus('Getting GPS location…');
   const request=(async()=>{try{
-   const next=await locateJaipur(coords=>{setValue(coords);setStatus('Finding your Jaipur area…');onPosition?.(coords)});
+   const next=await locateJaipur(coords=>{if(requestId!==generation.current)return;setValue(coords);setStatus('Finding your Jaipur area…');onPosition?.(coords)});
+   if(requestId!==generation.current){try{localStorage.removeItem(cacheKey)}catch{}return null}
    setValue(next);setError(next.warning||'');return next;
-  }catch(e){setValue({...defaultJaipurHub});setError(e instanceof Error?e.message:'Using the default Jaipur hub.');return null}
-  finally{setBusy(false);setStatus('');inFlight.current=null}})();
+  }catch(e){if(requestId!==generation.current)return null;setValue({...defaultJaipurHub});setError(e instanceof Error?e.message:'Using the default Jaipur hub.');return null}
+  finally{if(requestId===generation.current){setBusy(false);setStatus('');inFlight.current=null}}})();
   inFlight.current=request;return request;
  },[]);
  useEffect(()=>{
   if(!auto)return;
   const key=identity||'guest';if(lastIdentity.current===key)return;lastIdentity.current=key;
   if(!identity){try{if(sessionStorage.getItem('nexora.location.attempted'))return;sessionStorage.setItem('nexora.location.attempted','true')}catch{/* GPS works without browser storage. */}}
-  void detect();
+  // Login can occur while a guest permission request is still pending. Retry for the new identity.
+  if(inFlight.current&&identity){const queuedGeneration=generation.current;void inFlight.current.then(()=>{if(lastIdentity.current===key&&generation.current===queuedGeneration)void detect()})}else void detect();
  },[auto,identity,detect]);
- const accept=useCallback((next:JaipurLocation)=>{if(next.source==='fallback')return;setValue(next);setError(next.warning||'')},[]);
- const clear=useCallback(()=>{setValue(null);setError('');try{localStorage.removeItem(cacheKey)}catch{/* Saved delivery addresses remain available. */}},[]);
+ const accept=useCallback((next:JaipurLocation)=>{if(next.source==='fallback')return;generation.current++;inFlight.current=null;setBusy(false);setStatus('');setValue(next);setError(next.warning||'')},[]);
+ const clear=useCallback(()=>{generation.current++;inFlight.current=null;setBusy(false);setStatus('');setValue(null);setError('');try{localStorage.removeItem(cacheKey)}catch{/* Saved delivery addresses remain available. */}},[]);
  return{value,error,busy,status,detect,accept,clear};
 }
 
@@ -65,7 +68,7 @@ export async function searchJaipurAddress(street:string,area:string,pin:string):
  if(Array.isArray(data)&&!data.length){const simpler=street.replace(/^(?:house|flat|plot|no\.?|number|#)?\s*[\d/\-]+[,\s]+/i,'').trim();if(simpler&&simpler!==street.trim()){await new Promise(resolve=>setTimeout(resolve,1100));url.searchParams.set('q',`${simpler}, ${area}, Jaipur, Rajasthan, India`);const retry=await fetch(url,{signal:controller.signal,headers:{Accept:'application/json'}});if(retry.ok)data=await retry.json()}}
  const matches:Array<AddressMatch>=(Array.isArray(data)?data:[]).filter(item=>{
  const a=item.address||{},lat=Number(item.lat),lon=Number(item.lon);
- return jaipurAddress(a)&&(!a.postcode||a.postcode===pin)&&inJaipurBounds(lat,lon)&&!!(a.road||a.house_number)&&!['administrative','postcode','suburb','city','neighbourhood'].includes(item.type);
+ return jaipurAddress(a)&&(!a.postcode||a.postcode===pin)&&inJaipurBounds(lat,lon)&&!!(a.road||a.house_number||['house','building','apartments','school','restaurant','cafe','place_of_worship','hospital'].includes(item.type))&&!['administrative','postcode','suburb','city','neighbourhood'].includes(item.type);
  }).map(item=>({latitude:Number(item.lat),longitude:Number(item.lon),label:String(item.display_name||street)}));
  if(!matches.length)throw new Error('This street is not mapped yet. Choose your delivery entrance on the map below, or use current location.');
  return matches;
