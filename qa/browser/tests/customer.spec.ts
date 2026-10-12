@@ -149,7 +149,8 @@ test.describe('multi-role signup with isolated backend fixtures',()=>{
   });
   await page.goto('/');await page.getByRole('button',{name:'Sign in / Sign up',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Good food starts with hello.'});await dialog.getByRole('button',{name:'Create account',exact:true}).click();await dialog.getByLabel('Register as').selectOption(workspace);await dialog.getByLabel('Full name').fill('Role customer');await dialog.getByLabel('Email',{exact:true}).fill('roles@example.test');await dialog.getByLabel('Password',{exact:true}).fill('roles-password-123');await dialog.locator('form').getByRole('button',{name:'Create account',exact:true}).click();await expect(dialog).toHaveCount(0);
   await expect(page).toHaveURL(workspace==='customer'?/#\/$/:new RegExp('#/'+workspace+'$'));
-  if(workspace!=='customer')await expect(page.getByRole('heading',{name:workspace==='restaurant'?'Welcome to your restaurant workspace':workspace==='rider'?'Welcome to your rider workspace':'Your admin access request is saved'})).toBeVisible();
+  if(workspace==='rider'){await expect(page.getByLabel('Full name',{exact:true})).toHaveValue('Role customer');await expect(page.getByLabel('Indian mobile number')).toBeVisible();await expect(page.getByRole('button',{name:'Submit rider application'})).toBeVisible()}
+  if(workspace!=='customer')await expect(page.getByRole('heading',{name:workspace==='restaurant'?'Welcome to your restaurant workspace':workspace==='rider'?'Complete your rider application':'Your admin access request is saved'})).toBeVisible();
   await expect(page.getByText('This workspace needs assigned access')).toHaveCount(0);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
  });
 });
