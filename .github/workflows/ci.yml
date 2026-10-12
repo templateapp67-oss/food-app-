@@ -8,10 +8,10 @@ jobs:
    - uses: actions/checkout@v4
    - uses: actions/setup-node@v4
      with: {node-version: '24', cache: npm}
+   - run: npm ci
    - uses: denoland/setup-deno@v2
      with: {deno-version: v2.x}
    - run: deno check supabase/functions/send-notification/index.ts supabase/functions/process-deletion/index.ts supabase/functions/public-deletion/index.ts
-   - run: npm ci
    - run: npm test
    - run: npm run build
  android-debug:
