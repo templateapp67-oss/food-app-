@@ -1,0 +1,10 @@
+import {useEffect,useState} from 'react';
+import {rpc} from '../api';
+export type ExperienceMode='live'|'demo';
+export function customerUsesDemo(workspace:string,preview:boolean,platformMode:ExperienceMode){return preview||(workspace==='customer'&&platformMode==='demo')}
+export default function ExperienceModeControls({mode,onSaved}:{mode:ExperienceMode;onSaved:(mode:ExperienceMode)=>void}){
+ const[selected,setSelected]=useState<ExperienceMode>(mode),[reason,setReason]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+ useEffect(()=>setSelected(mode),[mode]);
+ async function save(){setBusy(true);setError('');setNotice('');try{await rpc('nexora_set_experience_mode',{p_mode:selected,p_reason:reason.trim()});onSaved(selected);setNotice(`${selected==='demo'?'Demo':'Live'} mode is now selected for the Customer App.`)}catch(e){setError(e instanceof Error?e.message:'Could not save mode')}finally{setBusy(false)}}
+ return <section className="panel" aria-label="Customer experience mode"><h2>Customer App · Live / Demo mode</h2><p>Choose the experience visitors see. Live shows approved real restaurants. Demo shows sample restaurants, dishes and offers with no real orders or deliveries.</p><div className="rd-offer-tabs"><button aria-pressed={selected==='live'} className={selected==='live'?'active':''} onClick={()=>setSelected('live')}>Live · original restaurants</button><button aria-pressed={selected==='demo'} className={selected==='demo'?'active':''} onClick={()=>setSelected('demo')}>Demo · sample experience</button></div><p>Current customer mode: <strong>{mode==='live'?'Live':'Demo'}</strong>. Restaurant, rider and admin workspaces continue to use their assigned live access.</p><label>Reason for changing customer mode<input value={reason} minLength={3} maxLength={2000} onChange={e=>setReason(e.target.value)}/></label><button className="primary" disabled={busy||reason.trim().length<3} onClick={()=>void save()}>{busy?'Saving…':'Apply customer mode'}</button>{error&&<p role="alert" className="error-banner">{error}</p>}{notice&&<p role="status">{notice}</p>}</section>;
+}

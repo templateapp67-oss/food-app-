@@ -168,3 +168,19 @@ test('live approved restaurants appear immediately in locality and name search w
  await page.evaluate(()=>{localStorage.setItem('qa.live-listing-status','active');window.dispatchEvent(new Event('focus'))});
  await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toBeVisible();await page.getByLabel('Global restaurant and food search').fill('jHoTwArA');await page.getByRole('button',{name:'Search food',exact:true}).click();await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toBeVisible();await page.getByLabel('Global restaurant and food search').fill('rambharose cafe');await page.getByRole('button',{name:'Search food',exact:true}).click();await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toBeVisible();await expect(page.getByText('SAMPLE PREVIEW',{exact:true})).toHaveCount(0);
 });
+
+test('the Super Admin customer-mode setting switches visitors between complete demo and original live data',async({page})=>{
+ await page.addInitScript(()=>{
+  const native=window.fetch.bind(window);localStorage.setItem('qa.customer-mode','demo');
+  window.fetch=async(input,init)=>{
+   const url=String(input);if(!url.startsWith('https://zilwgiuiygqqardzutxi.supabase.co'))return native(input,init);
+   let body:unknown=[];
+   if(url.includes('nexora_food_public_config'))body={'cod.enabled':true,'experience.customer_mode':localStorage.getItem('qa.customer-mode')};
+   else if(url.includes('/rest/v1/nexora_food_restaurants'))body=[{id:'original-cafe',name:'Rambharose Cafe',city:'Jaipur',address:'Jhotwara, Jaipur',status:'active',description:'Original restaurant',is_demo:false,is_temporarily_closed:false,prep_time_min:20,rating_avg:0,rating_count:0,avg_cost_for_two_paise:30000,min_order_paise:0,is_veg_only:true,cuisines:['North Indian']}];
+   return new Response(JSON.stringify(body),{status:200,headers:{'Content-Type':'application/json'}});
+  };
+ });
+ await page.goto('/');await expect(page.getByText(/DEMO WORKSPACE/)).toBeVisible();await expect(page.getByRole('button',{name:'View Dough & Co.'})).toBeVisible();await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toHaveCount(0);await expect(page.getByRole('button',{name:'Sign in / Sign up',exact:true})).toBeVisible();
+ await page.evaluate(()=>{localStorage.setItem('qa.customer-mode','live');window.dispatchEvent(new Event('focus'))});await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toBeVisible();await expect(page.getByRole('button',{name:'View Dough & Co.'})).toHaveCount(0);
+ await page.evaluate(()=>{localStorage.setItem('qa.customer-mode','demo');window.dispatchEvent(new Event('focus'))});await expect(page.getByRole('button',{name:'View Dough & Co.'})).toBeVisible();await expect(page.getByRole('button',{name:'View Rambharose Cafe'})).toHaveCount(0);
+});
