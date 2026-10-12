@@ -1,4 +1,4 @@
-const CACHE='nexora-shell-v4';
+const CACHE='nexora-shell-v5-commercial';
 self.addEventListener('install',event=>event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
  const response=await fetch('/precache.json',{cache:'no-store'});if(!response.ok)throw new Error('Offline shell manifest unavailable');

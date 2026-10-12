@@ -38,6 +38,7 @@ import {refreshPush,logoutWithPush} from './push';
 import {useJaipurLocation} from './geolocation';
 import DeliveryMap from './DeliveryMap';
 import {DeliveryAddressForm} from './DeliveryAddressForm';
+import AppUpdate from './components/AppUpdate';
 import CommercialManagementModule from './components/commercial/CommercialManagementModule';
 import * as seed from './demo';import {supabase,configured,demoAllowed,rpc,quoteCart,placeOrder,readCatalog} from './api';
 function useStored<T>(key:string,fallback:T){const [value,set]=useState<T>(()=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch{return fallback}});useEffect(()=>{localStorage.setItem(key,JSON.stringify(value))},[key,value]);return[value,set]as const}
@@ -110,7 +111,7 @@ export default function App(){
  async function loadSection(next:string){if(next==='Commercials & Plans'){navigate('/commercial');return;}setSection(next);setExtraData([]);if(!live||!authorized)return;const table:Record<string,string>={'Restaurant members':'restaurant_members',Riders:'delivery_partners',Reviews:'restaurant_reviews',Promotions:'coupons',Customers:'profiles',Support:'support_tickets',Rewards:'loyalty_ledger',Settings:'app_settings','Audit log':'admin_audit_logs',Settlements:'restaurant_settlements','Deletion requests':'deletion_requests'};if(table[next])await run(async()=>{let request=supabase!.from('nexora_food_'+table[next]).select('*');if(role==='restaurant'&&['Reviews','Promotions'].includes(next))request=request.eq('restaurant_id',ownerRestaurant?.id);const{data,error}=await request.limit(50);if(error)throw error;setExtraData(data||[])})}
  const legalRoute=legalPaths.includes(path.split('?')[0]);
  const customerTab=path==='/orders'?'orders':path==='/rewards'?'rewards':path==='/profile'?'profile':path==='/search'?'search':'home';
- return <div className="app-shell">
+ return <div className="app-shell"><AppUpdate/>
  <div className="mode-strip"><span><span className={'dot '+(demo?'amber':'')}/>{demo?'DEMO WORKSPACE · Sample data · No real payments or deliveries':configured?'LIVE BACKEND · Supabase connected':'Live backend not configured'}</span>{(demoAllowed||roles.includes('super_admin'))&&<button onClick={()=>{if(role==='customer'&&platformMode==='demo'&&!previewDemo){setSection('Settings');navigate('/admin');return;}setDemo(!demo);setModal(null);setQuote(null);if(role==='customer')navigate('/');}}>{role==='customer'&&platformMode==='demo'&&!previewDemo?'Manage customer mode':demo?'Switch to live':'Explore demo'}<ArrowRight size={13}/></button>}</div>
  {role!=='customer'&&configured&&<div className="notice small" aria-label="Customer mode summary">Customer App: <strong>{platformMode==='live'?'Live · original approved restaurants':'Demo · sample restaurants'}</strong>. Dashboard data: {demo?'sample preview':'live records'}.</div>}
  <InstallApp/>

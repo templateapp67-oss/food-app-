@@ -162,6 +162,7 @@ export default function CommercialManagementModule() {
 
   return (
     <div className="comm-container">
+      <aside className="notice" role="status">{lang === 'hi' ? 'नमूना कार्यक्षेत्र: आवेदन, योजनाएँ, समीक्षा और भुगतान विवरण अभी परीक्षण डेटा हैं। बदलाव live database में सेव नहीं होते। भूमिका चयन केवल preview है।' : 'Sample workspace: applications, plans, reviews and payout statements are test data. Changes are not saved to the live database. Role selection is for preview only.'}</aside>
       {/* Top Legal / Tax Safety Banner */}
       <div className="comm-banner-disclaimer">
         <ShieldAlert size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
