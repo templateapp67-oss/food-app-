@@ -16,4 +16,9 @@ describe('Restaurant approvals management',()=>{
   const decision=mount(),prompt=vi.spyOn(window,'prompt');prompt.mockReturnValueOnce(null).mockReturnValueOnce('x').mockReturnValueOnce(' Invalid documents ');
   fireEvent.click(screen.getByRole('button',{name:'Reject Kitchen 1'}));expect(decision).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Reject Kitchen 1'}));expect(screen.getByRole('alert').textContent).toContain('at least 3');expect(decision).not.toHaveBeenCalled();fireEvent.click(screen.getByRole('button',{name:'Reject Kitchen 1'}));await waitFor(()=>expect(decision).toHaveBeenCalledWith(rows[1],'rejected','Invalid documents'));
  });
+ it('shows a real Rambharose Cafe pending entry and updates counts after approval',()=>{
+  const restaurant={...rows[0],name:'Rambharose Cafe',address:'Jhotwara, Jaipur',is_demo:false};const props={busy:false,onAdd:vi.fn(),onPhotos:vi.fn(),onZone:vi.fn(),onDecision:vi.fn()};const {rerender}=render(<RestaurantManagement {...props} restaurants={[restaurant]}/>);
+  fireEvent.click(screen.getByRole('button',{name:'Pending (1)'}));expect(screen.getByText('Rambharose Cafe')).toBeDefined();expect(screen.getByRole('button',{name:'Approve Rambharose Cafe'})).toBeDefined();expect(screen.getByRole('button',{name:'Reject Rambharose Cafe'})).toBeDefined();expect(screen.queryByLabelText('Demo restaurant management')).toBeNull();rerender(<RestaurantManagement {...props} restaurants={[{...restaurant,status:'active'}]}/>);expect(screen.getByRole('button',{name:'Pending (0)'})).toBeDefined();fireEvent.click(screen.getByRole('button',{name:'Active (1)'}));expect(screen.getByText('Rambharose Cafe')).toBeDefined();
+ });
+
 });
