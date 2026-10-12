@@ -24,5 +24,5 @@ Only Food-prefixed objects/private Food schema were deployed. Applied migrations
 - `npm ci --offline` succeeded from the completed npm cache; `npm test`: 124 passed; TypeScript/Vite production build passed before final packaging.
 - Initial transactional critical-gap suite passed against the connected live schema and rolled back all fixtures: token RLS, invalidation, queue dedupe, zero-token state, active-order and last-admin blockers, cancellation and shared-account protection.
 - The extended receipt/email-verification SQL rerun could not return a result through MCP (invalid/expired requestState twice). Its isolated full-anonymization/Auth-fixture completion branch is queued in GitHub database CI; no full live account deletion is claimed.
-- Five new migrations and three Food Edge Functions deployed successfully. No real FCM send, email delivery, avatar cleanup or Auth deletion was executed.
+- Six new migrations and three Food Edge Functions deployed successfully. No real FCM send, email delivery, avatar cleanup or Auth deletion was executed.
 - Browser legal/deletion tests, Deno checks and Android JVM/build/device jobs are configured in GitHub CI. Their current results must be read from the corresponding new run before claiming success. No local browser/emulator was available.

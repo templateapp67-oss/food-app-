@@ -1,7 +1,7 @@
 import {render,screen,fireEvent,waitFor,cleanup} from '@testing-library/react';
 import {vi,it,expect,beforeEach,afterEach} from 'vitest';
 const mocks=vi.hoisted(()=>({rpc:vi.fn(),getUser:vi.fn(),signIn:vi.fn(),enable:vi.fn(),disable:vi.fn()}));
-vi.mock('../api',()=>({rpc:mocks.rpc,supabase:{auth:{getUser:mocks.getUser,signInWithPassword:mocks.signIn,signOut:vi.fn()},functions:{invoke:vi.fn()}}}));
+vi.mock('../api',()=>({rpc:mocks.rpc,supabase:{auth:{getUser:mocks.getUser,getSession:async()=>({data:{session:{user:{id:'u'}}}}),signInWithPassword:mocks.signIn,signOut:vi.fn()},functions:{invoke:vi.fn()}}}));
 vi.mock('../push',()=>({pushConfigured:true,pushSupported:()=>typeof Notification!=='undefined',enablePush:mocks.enable,disablePush:mocks.disable}));
 import AccountDeletion from './AccountDeletion';import LegalPages from './LegalPages';import NotificationPermission from './NotificationPermission';
 const state={request:null,blockers:[],retention:{reviewed:false,public_text:'Retention awaits review',financial_retention_days:null}};

@@ -29,16 +29,16 @@ class FoodRepository(private val context:Context){
  suspend fun signIn(email:String,password:String){require(email.contains("@")&&password.isNotBlank()){ "Enter your email and password." };persistAuth(JSONObject(request("/auth/v1/token?grant_type=password",JSONObject().put("email",email.trim()).put("password",password),authenticated=false)))}
  suspend fun signUp(name:String,email:String,password:String):Boolean{require(name.trim().isNotEmpty()&&email.contains("@")&&password.length>=8){ "Enter your name, email and a password with at least 8 characters." };val data=JSONObject(request("/auth/v1/signup",JSONObject().put("email",email.trim()).put("password",password).put("data",JSONObject().put("full_name",name.trim())),authenticated=false));if(data.optString("access_token").isBlank())return false;persistAuth(data);return true}
  suspend fun deletionStatus():JSONObject {
- val receipt=prefs.getString("deletion_receipt",null)
+ val receiptKey="deletion_receipt_"+uid();val receipt=prefs.getString(receiptKey,null)
  if(receipt!=null){val status=runCatching{JSONObject(request("/functions/v1/nexora-food-public-deletion",JSONObject().put("action","status").put("receipt",receipt),authenticated=false))}.getOrNull()
- if(status?.optString("status")=="completed"){session=null;sessions.clear();prefs.edit().remove("deletion_receipt").apply();return JSONObject().put("request",status)} }
+ if(status?.optString("status")=="completed"){session=null;sessions.clear();prefs.edit().remove(receiptKey).apply();return JSONObject().put("request",status)} }
  val result=JSONObject(rpc("nexora_deletion_status"));val deletion=result.optJSONObject("request")
  if(deletion!=null&&receipt==null&&deletion.optString("status") in listOf("requested","processing","blocked_active_orders")){
- val value=rpc("nexora_deletion_receipt",JSONObject().put("p_request",deletion.getString("id"))).trim('"');prefs.edit().putString("deletion_receipt",value).apply() }
+ val value=rpc("nexora_deletion_receipt",JSONObject().put("p_request",deletion.getString("id"))).trim('"');prefs.edit().putString(receiptKey,value).apply() }
  return result
  }
  suspend fun requestDeletion(password:String,word:String){val email=session?.optJSONObject("user")?.optString("email")?:error("Email sign-in required");signIn(email,password);rpc("nexora_request_deletion",JSONObject().put("p_confirmation",word))}
- suspend fun cancelDeletion(id:String){rpc("nexora_cancel_deletion",JSONObject().put("p_request",id));prefs.edit().remove("deletion_receipt").apply()}
+ suspend fun cancelDeletion(id:String){rpc("nexora_cancel_deletion",JSONObject().put("p_request",id));prefs.edit().remove("deletion_receipt_"+uid()).apply()}
  suspend fun submitReview(order:String,rating:Int,body:String){rpc("nexora_submit_review",JSONObject().put("p_order",order).put("p_rating",rating).put("p_body",body))}
  suspend fun otp(phone:String){require(validPhone(phone)){"Enter a valid 10-digit mobile number."};request("/auth/v1/otp",JSONObject().put("phone","+91$phone").put("create_user",true),authenticated=false)}
  suspend fun verify(phone:String,code:String){require(Regex("^[0-9]{6}$").matches(code)){"Enter a 6-digit verification code."};val data=JSONObject(request("/auth/v1/verify",JSONObject().put("phone","+91$phone").put("token",code).put("type","sms"),authenticated=false));data.put("expires_at",System.currentTimeMillis()/1000+data.optLong("expires_in",3600));session=data;sessions.save(data.toString())}

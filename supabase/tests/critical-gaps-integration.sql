@@ -10,7 +10,8 @@ select order_id,customer,restaurant,'Food gap QA','{"line1":"Private home","phon
 set local role authenticated;
 select set_config('request.jwt.claim.sub',(select customer::text from food_gap_fixture),true);
 update food_gap_fixture set token_id=public.nexora_food_register_device_token(repeat('a',80),'web','qa');
-do $$begin
+do $$declare version timestamptz;begin
+ select updated_at into version from public.nexora_food_device_tokens where id=(select token_id from food_gap_fixture);perform public.nexora_food_register_device_token(repeat('a',80),'web','qa2');if (select updated_at from public.nexora_food_device_tokens where id=(select token_id from food_gap_fixture))<>version then raise exception 'Same owner refresh invalidated push work';end if;
  begin perform public.nexora_food_register_device_token('short','bad',null);raise exception 'Invalid token accepted';exception when others then if sqlerrm='Invalid token accepted'then raise;end if;end;
  begin perform public.nexora_food_request_deletion('DELETE');raise exception 'No password AMR accepted';exception when others then if sqlerrm='No password AMR accepted'then raise;end if;end;
  begin perform public.nexora_food_claim_push(gen_random_uuid());raise exception 'Client called service worker';exception when insufficient_privilege then null;end;
@@ -43,6 +44,7 @@ update food_gap_fixture set request_id=public.nexora_food_request_deletion('DELE
 select public.nexora_food_cancel_deletion((select request_id from food_gap_fixture));
 update food_gap_fixture set request_id=public.nexora_food_request_deletion('DELETE');
 update food_gap_fixture set receipt=public.nexora_food_deletion_receipt(request_id);
+do $$begin perform public.nexora_food_deletion_receipt((select request_id from food_gap_fixture));end$$;
 reset role;
 do $$begin
  if public.nexora_food_deletion_receipt_status(encode(extensions.digest((select receipt from food_gap_fixture),'sha256'),'hex'))->>'status'<>'requested' then raise exception 'Receipt unavailable';end if;
