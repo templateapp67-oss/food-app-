@@ -33,6 +33,10 @@ select public.nexora_food_save_images(restaurant,'https://example.invalid/cover.
 do $$begin if not exists(select 1 from public.nexora_food_restaurants where id=(select restaurant from food_fixture)and phone='9876543210'and cover_url='https://example.invalid/cover.webp'and cardinality(menu_pages)=1)then raise exception 'Photo save changed unrelated profile fields';end if;end$$;
 select public.nexora_food_set_hours(restaurant,(select jsonb_agg(jsonb_build_object('weekday',d,'opens','00:00','closes','23:59:59','is_closed',false))from generate_series(0,6)d))from food_fixture;
 select set_config('request.jwt.claim.sub',(select admin::text from food_fixture),true);
+reset role;
+insert into storage.objects(bucket_id,name,owner,metadata)select 'nexora-food-documents',restaurant::text||'/initial-fssai.png',owner,'{"mimetype":"image/png","size":512}'::jsonb from food_fixture;
+insert into public.nexora_food_restaurant_documents(restaurant_id,kind,storage_path,status,uploaded_by,reviewed_by)select restaurant,'fssai',restaurant::text||'/initial-fssai.png','approved',owner,admin from food_fixture;
+set local role authenticated;
 select public.nexora_food_admin_restaurant_status(restaurant,'active','transactional test approval')from food_fixture;
 select public.nexora_food_set_zone(restaurant,26.9124,75.7873,5000,'transactional test zone')from food_fixture;
 select public.nexora_food_admin_role(rider,'rider','transactional test rider')from food_fixture;
