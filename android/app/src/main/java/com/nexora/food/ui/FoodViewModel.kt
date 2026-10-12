@@ -37,6 +37,7 @@ class FoodViewModel(app:Application):AndroidViewModel(app){
  fun deletionStatus(){action{val deletion=repo.deletionStatus();mutable.update{it.copy(deletion=deletion)};if(deletion.optJSONObject("request")?.optString("status")=="completed"){load();mutable.update{it.copy(message="Account deletion completed. You are signed out.")}}}}
  fun requestDeletion(password:String,word:String){action{if(demo)error("Demo account cannot be deleted.");repo.requestDeletion(password,word);mutable.update{it.copy(deletion=repo.deletionStatus(),message="Deletion request recorded.")}}}
  fun cancelDeletion(id:String){action{repo.cancelDeletion(id);mutable.update{it.copy(deletion=repo.deletionStatus())}}}
+ fun pushPermissionDenied(){mutable.update{it.copy(message="Notification permission denied. Enable it in Android app settings to receive push alerts. In-app updates remain available.")}}
  fun enablePush(){action{com.nexora.food.push.FoodPush.enable(getApplication(),repo);mutable.update{it.copy(message="Order push enabled.")}}}
  fun logout(){action{repo.logout();clearCart();load()}}
  fun dismissError(){mutable.update{it.copy(error=null,message=null)}}

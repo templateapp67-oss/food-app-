@@ -16,7 +16,7 @@ Deno.serve(async(req:Request)=>{
  const allowed=await db.rpc('nexora_food_push_allowed',{p_notification:job.notification_id,p_token:job.token_id,p_claim:job.claim});if(allowed.error)throw allowed.error;if(!allowed.data)result='failed';
  if(access&&sa&&allowed.data){try{
  const response=await fetch(`https://fcm.googleapis.com/v1/projects/${sa.project_id}/messages:send`,{method:'POST',signal:AbortSignal.timeout(20000),headers:{Authorization:'Bearer '+access,'Content-Type':'application/json'},body:JSON.stringify({message:{token:job.token,data:{order_id:job.order_id,event:job.event,notification_id:job.notification_id,title:'Order update',body:'Open Nexora Food for your order status.'},android:{priority:'HIGH'},webpush:{headers:{Urgency:'high'}}}})});
- if(response.ok)result='sent';else{const error=await response.json().catch(()=>({}));const codes=(error?.error?.details||[]).map((x:{errorCode?:string})=>x.errorCode);result=codes.includes('UNREGISTERED')?'invalid':response.status===429||response.status>=500?'retry':'failed';}
+ if(response.ok)result='sent';else{const error=await response.json().catch(()=>({}));const codes=(error?.error?.details||[]).map((x:{errorCode?:string})=>x.errorCode);const invalid=codes.includes('UNREGISTERED')||(codes.includes('INVALID_ARGUMENT')&&/registration token|message[.]token/i.test(JSON.stringify(error?.error?.details||[])+String(error?.error?.message||'')));result=invalid?'invalid':response.status===429||response.status>=500?'retry':'failed';}
  }catch{result='unknown';}}
  const finished=await db.rpc('nexora_food_finish_push',{p_notification:body.notification_id,p_token:job.token_id,p_claim:job.claim,p_result:result});
  if(finished.error)throw finished.error;results.push({token_id:job.token_id,status:result});
