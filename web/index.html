@@ -1,1 +1,25 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#ea6b35"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-title" content="Nexora Food"/><meta name="description" content="Discover great food with Nexora Food. Customer ordering, restaurant management and platform administration."/><link rel="manifest" href="/manifest.webmanifest"/><link rel="apple-touch-icon" href="/nexora-food-favicon.png"/><link rel="icon" type="image/png" sizes="512x512" href="/nexora-food-favicon.png"/><title>Nexora Food | Good food, delivered right</title></head><body><div id="root"></div><script src="/install-prompt.js"></script><script type="module" src="/src/main.tsx"></script></body></html>
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><script>
+(function() {
+  try {
+    var origFetch = window.fetch;
+    var currentFetch = typeof origFetch === 'function' ? origFetch.bind(window) : origFetch;
+    Object.defineProperty(window, 'fetch', {
+      get: function() { return currentFetch; },
+      set: function(val) { currentFetch = val; },
+      configurable: true,
+      enumerable: true
+    });
+  } catch (_) {}
+  window.addEventListener('error', function(e) {
+    if ((e.filename && e.filename.indexOf('chrome-extension://') !== -1) ||
+        (e.error && e.error.stack && e.error.stack.indexOf('chrome-extension://') !== -1)) {
+      e.preventDefault();
+    }
+  });
+  window.addEventListener('unhandledrejection', function(e) {
+    if (e.reason && e.reason.stack && e.reason.stack.indexOf('chrome-extension://') !== -1) {
+      e.preventDefault();
+    }
+  });
+})();
+</script><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#ea6b35"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-title" content="Nexora Food"/><meta name="description" content="Discover great food with Nexora Food. Customer ordering, restaurant management and platform administration."/><link rel="manifest" href="/manifest.webmanifest"/><link rel="apple-touch-icon" href="/nexora-food-favicon.png"/><link rel="icon" type="image/png" sizes="512x512" href="/nexora-food-favicon.png"/><title>Nexora Food | Good food, delivered right</title></head><body><div id="root"></div><script src="/install-prompt.js"></script><script type="module" src="/src/main.tsx"></script></body></html>
